@@ -2,7 +2,7 @@
 
 # tornado framework
 from tornado.ioloop import IOLoop
-from tornado.web import Application, HTTPError, RequestHandler
+from tornado.web import Application
 from tornado.options import define, options
 
 # inne
@@ -10,12 +10,13 @@ from database import DatabaseManager
 
 # konfiguracja modułu options
 define("config", help = "Specify configuration file")
+define("debug", default = False, help = "Specify debug mode state")
 define("port", default = 8080, help = "Application's listening port")
 define("db_host", help = "MySQL database server address")
 define("db_user", help = "MySQL user")
 define("db_pass", help = "MySQL user's password")
 define("db_dbbs", help = "MySQL database")
-define("secret_key", default = "mySampleCookieSecret", help = "a secret key used in encryption/decryption")
+define("secret_key", default = "mySampleCookieSecret", help = "A secret key used in encryption/decryption")
 
 class ClassRegisterApplication(Application):
 
@@ -25,7 +26,7 @@ class ClassRegisterApplication(Application):
         ]
         
         Application.__init__(self, handlers,
-            debug = True,
+            debug = options.debug,
             template_path = "templates/",
             static_path = "statics/",
             cookie_secret = options.secret_key
