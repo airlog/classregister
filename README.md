@@ -7,6 +7,6 @@ Implementacja E-Dziennika na zajęcia z *Baz danych i zarządzania informacją* 
 =============
 
 Autorzy:
-> robin92
-> illa
+* robin92
+* illa
 
