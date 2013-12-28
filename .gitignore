@@ -1,0 +1,10 @@
+#
+# Zawiera reguły określające pliki, których GIT nie będzie pozwalał kontrolować.
+#
+
+# Kod bajtowy Pythona
+*.pyc
+
+# Pliki konfiguracyjne
+*.cfg
+
