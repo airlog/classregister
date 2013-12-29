@@ -113,13 +113,13 @@ class DatabaseManager(MysqlConnection):
 	### dla kazdego:
 
 	def get_password(self, login, type):
-		if (type == "UCZEN")
-			query = """SELECT Uczniowie.id, Loginy.haslo 
+		if type == "UCZEN":
+			query = """SELECT Uczniowie.id AS uid, Loginy.haslo 
 			FROM Loginy INNER JOIN Uczniowie ON Uczniowie.pesel = Loginy.login 
 			WHERE Loginy.login = {} AND Loginy.typ = "{}"
 			""".format(login,type)
-		elif (type == "NAUCZYCIEL")
-			query = """SELECT Nauczyciele.id, Loginy.haslo 
+		elif type == "NAUCZYCIEL":
+			query = """SELECT Nauczyciele.id AS uid, Loginy.haslo 
 			FROM Loginy INNER JOIN Nauczyciele ON Nauczyciele.pesel = Loginy.login 
 			WHERE Loginy.login = {} AND Loginy.typ = "{}"
 			""".format(login,type)
