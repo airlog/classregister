@@ -113,17 +113,27 @@ class DatabaseManager(MysqlConnection):
 	### dla kazdego:
 
 	def get_password(self, login, type):
-		query = """SELECT haslo FROM Loginy WHERE login = {} AND typ = "{}"""".format(login,type)
+		if (type == "UCZEN")
+			query = """SELECT Uczniowie.id, Loginy.haslo 
+			FROM Loginy INNER JOIN Uczniowie ON Uczniowie.pesel = Loginy.login 
+			WHERE Loginy.login = {} AND Loginy.typ = "{}"
+			""".format(login,type)
+		elif (type == "NAUCZYCIEL")
+			query = """SELECT Nauczyciele.id, Loginy.haslo 
+			FROM Loginy INNER JOIN Nauczyciele ON Nauczyciele.pesel = Loginy.login 
+			WHERE Loginy.login = {} AND Loginy.typ = "{}"
+			""".format(login,type)
+		
 		result = self.query(query)
 		if (result is not None and len(result)>0):
-			return result[0][haslo]
+			return result[0]
 		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
 		
 	### dla ucznia:
 	
 	def get_user_schedule(self, userId):
 		schedule = """
-			SELECT Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Lekcje.sala, Nauczyciele.imie, Nauczyciele.nazwisko
+			SELECT Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Przedmioty.id, Lekcje.sala, Nauczyciele.imie, Nauczyciele.nazwisko
 			FROM Przedmioty
 			INNER JOIN Lekcje ON Przedmioty.id = Lekcje.przedmiotId
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
@@ -152,6 +162,21 @@ class DatabaseManager(MysqlConnection):
 			return result
 		return []
   
+  	def get_user_events(self, userId):
+  		query = """
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przemioty.nazwa, Nauczyciel.imie, Nauczyciel.nazwisko, Wydarzenia.tresc
+			FROM Wydarzenia
+			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
+			INNER JOIN Przedmioty ON Lekcje.przedmiot.id = Przedmioty.id
+			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
+			WHERE Przedmioty.klasaId = (SELECT klasaId FROM Uczniowie WHERE id = {})
+			ORDER BY Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji
+			""".format(userId)
+		result = self.query(query)
+  		if result is not None:
+			return result
+		return []
+	
 	# dla nauczyciela:
 	
 	def get_teacher_schedule(self, teacherId):
