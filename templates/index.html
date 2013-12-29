@@ -6,14 +6,16 @@
 </head>
 <body>
 
-{% block flash_messages %}
-    <hr/>
-    <br/>
-    {% for message in get_flash() %}
-        <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i><br/>
+{% if is_flash() %}
+    {% block flash_messages %}
+        <hr/>
+        <br/>
+        {% for message in get_flash() %}
+            <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i><br/>
+        {% end %}
+        <br/>
+        <hr/>
     {% end %}
-    <br/>
-    <hr/>
 {% end %}
 
 {% block content %}

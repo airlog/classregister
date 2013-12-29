@@ -17,6 +17,7 @@ class BaseHandler(RequestHandler):
         # każde wywołanie render przekazuje dodatkowo następujące obiekty
         mykwargs = {
                     "get_flash": self.get_flash,
+                    "is_flash": self.is_flash,
                 }
                 
         # wywołaj render od ojca

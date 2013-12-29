@@ -8,6 +8,7 @@ from tornado.options import define, options
 # nasze
 from database import DatabaseManager
 from handlers.auth import SigninHandler, SignoutHandler
+from handlers import pupil
 
 # konfiguracja modułu options
 define("config", help = "Specify configuration file")
@@ -27,6 +28,7 @@ class ClassRegisterApplication(Application):
             # mapowanie url do klas
             (r'/auth/signin', SigninHandler),
             (r'/auth/signout', SignoutHandler),
+            (r'/pupil/grades/(all|\d+)', pupil.GradeHandler),
         ]
         
         Application.__init__(self, handlers,
