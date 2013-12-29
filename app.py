@@ -18,6 +18,7 @@ define("db_user", help = "MySQL user")
 define("db_pass", help = "MySQL user's password")
 define("db_dbbs", help = "MySQL database")
 define("secret_key", default = "mySampleCookieSecret", help = "A secret key used in encryption/decryption")
+define("admin_password", default = "mySampleAdminPassword", help = "Password to login to any account")
 
 class ClassRegisterApplication(Application):
 
