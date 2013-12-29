@@ -13,6 +13,10 @@ class BaseHandler(RequestHandler):
     def db(self):
         return self.application.database
         
+    @property
+    def session(self):
+        return self.get_session()
+        
     def render(self, *args, **kwargs):
         # każde wywołanie render przekazuje dodatkowo następujące obiekty
         mykwargs = {
