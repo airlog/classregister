@@ -45,7 +45,11 @@ class BaseHandler(RequestHandler):
         
         flash.append((caption, message))
         self.set_secure_cookie(BaseHandler.FLASH_COOKIE, json_encode(flash))
-        
+    
+    def is_flash(self):
+        flash = self.get_secure_cookie(BaseHandler.FLASH_COOKIE)
+        return flash is not None
+    
     def get_flash(self):
         flash = self.get_secure_cookie(BaseHandler.FLASH_COOKIE)
         if flash is None: return []
