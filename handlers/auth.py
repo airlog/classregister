@@ -23,17 +23,17 @@ class SigninHandler(BaseHandler):
         self.render("auth/signin.html", url = nextUrl)
         
     def post(self):
-        pesel, password = self.get_argument("login"), self.get_argument("password")
+        pesel, password, type = self.get_argument("login"), self.get_argument("password"), self.get_argument("user_type")
         password = sha256(password).hexdigest()
         
         # sprawdzanie zgodności hasła
         try:
-            validPassword = self.db.get_password(pesel, type = "NAUCZYCIEL")        
+            validPassword = self.db.get_password(pesel, type)        
             print("{}\n{}\n".format(password, validPassword))
             
             if password == validPassword:
                 self.flash_message("Logowanie", "Poprawnie zalogowano do systemu!")
-                self.set_session({"user": pesel, "type": "NAUCZYCIEL"})
+                self.set_session({"user": pesel, "type": type})
             else: self.flash_message("Logowanie", "Niepoprawne hasło!")
         except ValueError: self.flash_message("Logowanie", "Niepoprawny login")
                     
