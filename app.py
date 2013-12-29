@@ -35,6 +35,7 @@ class ClassRegisterApplication(Application):
             debug = options.debug,
             template_path = "templates/",
             static_path = "statics/",
+            static_url_prefix = "/statics/",
             login_url = "/auth/signin",
             cookie_secret = options.secret_key,
             xsrf_cookie = True

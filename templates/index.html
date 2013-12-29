@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8"/>
     <link rel="stylesheet" href="/statics/styles/default.css" type="text/css"/>
     <title>{% block title %}eDziennik{% end %}</title>
 </head>
 <body>
+
+<div class="menu">
+	{% block menu %}
+	{% end %}
+	<br/>
+</div>
 
 {% if is_flash() %}
     {% block flash_messages %}

@@ -1,0 +1,29 @@
+/* tagi */
+body {
+	background-image: url(/statics/images/pony.png);
+}
+
+table {
+	border: 1px solid gray;
+	background-color: white;
+}
+
+th {
+	border: 1px solid pink;
+	background-color: pink;
+}
+
+td {
+	border: 1px solid pink;
+	background-color: white;
+}
+
+/* klasy */
+.right {
+	float:right;
+}
+
+.menu {
+	background-color: pink;
+	opacity: 0.8;
+}
