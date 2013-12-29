@@ -42,7 +42,7 @@ class ClassRegisterApplication(Application):
         )
         
         self.database = DatabaseManager(options.db_host, options.db_user, options.db_pass,
-                options.db_dbbs)
+                options.db_dbbs, charset = "cp1250")
 
 def validate_option(dict, key):
     try:

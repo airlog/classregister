@@ -96,8 +96,8 @@ class DatabaseManager(MysqlConnection):
 	) collate utf8_general_ci;
 	"""
 	
-	def __init__(self, host, user, password, database):
-		MysqlConnection.__init__(self, host, database, user, password)
+	def __init__(self, host, user, password, database, charset = "utf8"):
+		MysqlConnection.__init__(self, host, database, user, password, chset = charset)
 		
 		self.__create_tables()
     
