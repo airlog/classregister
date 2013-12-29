@@ -5,8 +5,9 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application
 from tornado.options import define, options
 
-# inne
+# nasze
 from database import DatabaseManager
+from handlers.auth import SigninHandler, SignoutHandler
 
 # konfiguracja modułu options
 define("config", help = "Specify configuration file")
@@ -23,13 +24,17 @@ class ClassRegisterApplication(Application):
     def __init__(self):
         handlers = [
             # mapowanie url do klas
+            (r'/auth/signin', SigninHandler),
+            (r'/auth/signout', SignoutHandler),
         ]
         
         Application.__init__(self, handlers,
             debug = options.debug,
             template_path = "templates/",
             static_path = "statics/",
-            cookie_secret = options.secret_key
+            login_url = "/auth/signin",
+            cookie_secret = options.secret_key,
+            xsrf_cookie = True
         )
         
         self.database = DatabaseManager(options.db_host, options.db_user, options.db_pass,

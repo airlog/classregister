@@ -1,0 +1,15 @@
+{% extends ../index.html %}
+
+{% block title %}eDziennik - logowanie{% end %}
+
+{% block content %}
+<form action="/auth/signin" method="POST">
+    {% module xsrf_form_html() %}
+    <table>
+        <tr><td>Numer PESEL</td><td><input type="text" name="login"/></td></tr>
+        <tr><td>Hasło</td><td><input type="password" name="password"/></td></tr>
+        <tr><td></td><td><input type="submit" value="Zaloguj"/></td></tr>
+    </table>
+</form>
+{% end %}
+

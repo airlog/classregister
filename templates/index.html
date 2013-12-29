@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>{% block title %}eDziennik{% end %}</title>
+</head>
+<body>
+
+{% block flash_messages %}
+    <hr/>
+    <br/>
+    {% for message in get_flash() %}
+        <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i><br/>
+    {% end %}
+    <br/>
+    <hr/>
+{% end %}
+
+{% block content %}
+    {% if not current_user %}
+        Niezalogowany!
+    {% else %}
+        Zalogowany jako {{ current_user["user"] }}
+    {% end %}
+    <br/><br/>
+    <a href="/auth/signin">zaloguj</a><br/>
+    <a href="/auth/signout">wyloguj</a><br/>
+{% end %}
+
+</body>
+</html>
+

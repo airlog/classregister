@@ -22,6 +22,9 @@ class BaseHandler(RequestHandler):
         # wywołaj render od ojca
         RequestHandler.render(self, *args, **dict(kwargs.items() + mykwargs.items()))
     
+    def get_current_user(self):
+        return self.get_session()
+    
     def set_session(self, data):
         if not isinstance(data, dict): raise ValueError("data should be a dictionary")
         encoded = json_encode(data)
