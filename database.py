@@ -115,8 +115,8 @@ class DatabaseManager(MysqlConnection):
 	def get_password(self, login, type):
 		query = """SELECT haslo FROM Loginy WHERE login = {} AND typ = "{}"""".format(login,type)
 		result = self.query(query)
-		if result is not None:
-			return result[0]
+		if (result is not None and len(result)>0):
+			return result[0][haslo]
 		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
 		
 	### dla ucznia:
@@ -170,15 +170,16 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_pupils(self, teacherId, courseId = None):
 		query = """
-			SELECT * FROM Przedmioty
+			SELECT Klasy.nazwa, Przedmioty.nazwa, Uczniowie.imie, Uczniowie.nazwisko
+			FROM Przedmioty
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
 			INNER JOIN Uczniowie ON Klasy.id = Uczniowie.klasaId
-			WHERE Przedmioty.nauczycielId = {} 
+			WHERE Przedmioty.nauczycielId = {}
 		""".format(teacherId)
 		
 		if courseId is not None:
 			query += "\nAND Przedmioty.przedmiotId = {}".format(courseId) 			
-		query += "\nORDER BY Uczniowie.nazwisko, Uczniowie.imie"
+		query += "\nORDER BY Klasy.nazwa, Uczniowie.nazwisko, Uczniowie.imie"
 		
 		result = self.query(query)
 		if result is not None:
