@@ -12,6 +12,15 @@ class BaseHandler(RequestHandler):
     @property
     def db(self):
         return self.application.database
+        
+    def render(self, *args, **kwargs):
+        # każde wywołanie render przekazuje dodatkowo następujące obiekty
+        mykwargs = {
+                    "get_flash": self.get_flash,
+                }
+                
+        # wywołaj render od ojca
+        RequestHandler.render(self, *args, **dict(kwargs.items() + mykwargs.items()))
     
     def set_session(self, data):
         if not isinstance(data, dict): raise ValueError("data should be a dictionary")
