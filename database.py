@@ -89,7 +89,7 @@ class DatabaseManager(MysqlConnection):
 	CREATE_TABLE_LOGINY = """CREATE TABLE IF NOT EXISTS Loginy (
 		id INT AUTO_INCREMENT,
 		login VARCHAR(16),
-		haslo VARCHAR(48),
+		haslo VARCHAR(64),
 		typ ENUM("UCZEN", "NAUCZYCIEL"),
 		
 		PRIMARY KEY (id)
@@ -97,7 +97,6 @@ class DatabaseManager(MysqlConnection):
 	"""
 	
 	def __init__(self, host, user, password, database):
-		print("{}\n{}\n{}\n{}\n".format(host, user, password, database))
 		MysqlConnection.__init__(self, host, database, user, password)
 		
 		self.__create_tables()
@@ -114,7 +113,7 @@ class DatabaseManager(MysqlConnection):
 	### dla kazdego:
 
 	def get_password(self, login, type):
-		query = """SELECT haslo FROM Loginy WHERE login = {} AND typ = {}""".format(login,type)
+		query = """SELECT haslo FROM Loginy WHERE login = {} AND typ = "{}"""".format(login,type)
 		result = self.query(query)
 		if result is not None:
 			return result[0]
@@ -144,7 +143,7 @@ class DatabaseManager(MysqlConnection):
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
 			""".format(userId)
  		
-		if course is not None:
+		if courseId is not None:
 			query += "WHERE OcenyUcznia.przedmiotId = {}".format(courseId) 			
 		query += "\nORDER BY OcenyUcznia.data"
 		
@@ -152,4 +151,36 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
- 
+  
+	# dla nauczyciela:
+	
+	def get_teacher_schedule(self, teacherId):
+		schedule = """
+			SELECT Lekcje.dzien, Lekcje.numerLekcji, Klasy.nazwa, Przedmioty.nazwa, Lekcje.sala
+			FROM Przedmioty
+			INNER JOIN Lekcje ON Przedmioty.id = Lekcje.przedmiotId
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE nauczycielId = {}
+			ORDER BY Lekcje.dzien, Lekcje.numerLekcji
+			""".format(teacherId)
+		result = self.query(schedule)
+		if result is not None:
+			return result
+		return []
+	
+	def get_teacher_pupils(self, teacherId, courseId = None):
+		query = """
+			SELECT * FROM Przedmioty
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			INNER JOIN Uczniowie ON Klasy.id = Uczniowie.klasaId
+			WHERE Przedmioty.nauczycielId = {} 
+		""".format(teacherId)
+		
+		if courseId is not None:
+			query += "\nAND Przedmioty.przedmiotId = {}".format(courseId) 			
+		query += "\nORDER BY Uczniowie.nazwisko, Uczniowie.imie"
+		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
