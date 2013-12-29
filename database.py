@@ -1,6 +1,7 @@
 # coding=utf-8
 
-from externals.torndb import Connection as MysqlConnection
+import externals
+from torndb import Connection as MysqlConnection
 
 class DatabaseManager(MysqlConnection):
     
