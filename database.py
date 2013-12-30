@@ -201,10 +201,10 @@ class DatabaseManager(MysqlConnection):
   
   	def get_user_events(self, userId):
   		query = """
-			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przemioty.nazwa, Przedmioty.id, Nauczyciel.imie, Nauczyciel.nazwisko, Wydarzenia.tresc
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Przedmioty.id, Nauczyciele.imie, Nauczyciele.nazwisko, Wydarzenia.tresc
 			FROM Wydarzenia
 			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
-			INNER JOIN Przedmioty ON Lekcje.przedmiot.id = Przedmioty.id
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
 			WHERE Przedmioty.klasaId = (SELECT klasaId FROM Uczniowie WHERE id = {})
 			ORDER BY Wydarzenia.data DESC, Lekcje.dzien, Lekcje.numerLekcji
