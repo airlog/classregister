@@ -1,0 +1,24 @@
+{% extends main.html %}
+
+{% block title %}eDziennik - nieobecności{% end %}
+
+{% block content %}
+<h2>Nieobecności</h2>
+	<table>
+		<tr>
+			<th>data</th>
+			<th>dzień</th>
+			<th>lekcja</th>
+			<th>przedmiot</th>
+		</tr>
+		{% for a in absence %}
+			<tr>
+				<td>{{ a["data"] }}</td>
+				<td>{{ a["dzien"] }}</td>
+				<td class="right">{{ a["numerLekcji"] }}</td>
+				<td> <a href="/pupil/{{ current_user["user"] }}/grades/{{ a["id"]}}">{{ a["nazwa"] }}</a></td>
+			</tr>
+		{% end %}
+  </table>
+{% end %}
+

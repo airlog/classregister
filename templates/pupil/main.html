@@ -3,9 +3,13 @@
 {% block title %}eDziennik - oceny ucznia{% end %}
 
 {% block menu %}
-	<h1>Dzienniczek ucznia</h1>
-	<a href="../schedule"> PLAN LEKCJI</a>
-	<a href="../events"> WYDARZENIA</a>
-	<a href="../grades/all"> OCENY</a>
-	<a class="right" href="../../auth/signout"> WYLOGUJ</a>
+	<h1>e-Dziennik</h1>
+	<a href="/pupil/{{ current_user["user"] }}/schedule">PLAN LEKCJI</a>
+	<a href="/pupil/{{ current_user["user"] }}/events">WYDARZENIA</a>
+	<a href="/pupil/{{ current_user["user"] }}/grades/">OCENY</a>
+	<a href="/pupil/{{ current_user["user"] }}/absence">OBECNOŚĆ</a>
+	<a class="right" href="/auth/signout"> WYLOGUJ</a>
+{% end %}
+
+{% block content %}
 {% end %}

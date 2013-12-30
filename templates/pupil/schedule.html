@@ -1,0 +1,26 @@
+{% extends main.html %}
+
+{% block title %}eDziennik - plan lekcji{% end %}
+
+{% block content %}
+<h2>Plan lekcji</h2>
+	<table>
+		<tr>
+			<th>dzień</th>
+			<th>lekcja</th>
+			<th>przedmiot</th>
+			<th>nauczyciel</th>
+			<th>sala</th>
+		</tr>
+		{% for s in schedule %}
+			<tr>
+				<td>{{ s["dzien"] }}</td>
+				<td class="right">{{ s["numerLekcji"] }}</td>
+				<td> <a href="/pupil/{{ current_user["user"] }}/grades/{{ s["id"] }}">{{ s["nazwa"] }}</a></td>
+				<td>{{ s["imie"] }} {{ s["nazwisko"] }}</td>
+				<td>{{ s["sala"] }}</td>
+			</tr>
+		{% end %}
+  </table>
+{% end %}
+

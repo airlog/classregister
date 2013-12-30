@@ -18,6 +18,15 @@ td {
 	background-color: white;
 }
 
+a {
+	text-decoration: none;
+	color: Black;
+}
+
+a:hover {
+	color: Plum;
+}
+
 /* klasy */
 .right {
 	float:right;
