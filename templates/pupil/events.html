@@ -18,7 +18,7 @@
 				<td>{{ e["data"] }}</td>
 				<td>{{ e["dzien"] }}</td>
 				<td class="right">{{ e["numerLekcji"] }}</td>
-				<td><a href="{{ ../grades/e["id"]}}">{{ e["nazwa"] }}</a></td>
+				<td><a href="/pupil/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["nazwa"] }}</a></td>
 				<td>{{ e["imie"] }} {{ e["nazwisko"] }}</td>
 				<td>{{ e["tresc"] }}</td>
 			</tr>

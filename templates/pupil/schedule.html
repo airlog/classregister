@@ -16,7 +16,7 @@
 			<tr>
 				<td>{{ s["dzien"] }}</td>
 				<td class="right">{{ s["numerLekcji"] }}</td>
-				<td> <a href="{{ ../grades/s["id"]}}">{{ s["nazwa"] }}</a></td>
+				<td> <a href="/pupil/{{ current_user["user"] }}/grades/{{ s["id"] }}">{{ s["nazwa"] }}</a></td>
 				<td>{{ s["imie"] }} {{ s["nazwisko"] }}</td>
 				<td>{{ s["sala"] }}</td>
 			</tr>
