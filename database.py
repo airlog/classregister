@@ -95,6 +95,7 @@ class DatabaseManager(MysqlConnection):
 		PRIMARY KEY (id)
 	) collate utf8_general_ci;
 	"""
+	
 	CREATE_TABLE_NIEOBECNOSCI = """CREATE TABLE IF NOT EXISTS Nieobecnosci (
 		id INT AUTO_INCREMENT,
 		uczenId INT,
@@ -149,7 +150,7 @@ class DatabaseManager(MysqlConnection):
 			raise ValueError("Typ {} nie istnieje".format(type))		
 
 		result = self.query(query)
-		if (result is not None and len(result)>0):
+		if result is not None and len(result)>0:
 			return result[0]
 		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
 		
@@ -171,7 +172,7 @@ class DatabaseManager(MysqlConnection):
  
 	def get_user_grades(self, userId, courseId = None): 		
 		query = """
-			SELECT OcenyUcznia.data, OcenyUcznia.ocena, Przedmioty.nazwa, Nauczyciele.imie, Nauczyciele.nazwisko, OcenyUcznia.opis
+			SELECT OcenyUcznia.data, OcenyUcznia.ocena, Przedmioty.nazwa, Przedmioty.id, Nauczyciele.imie, Nauczyciele.nazwisko, OcenyUcznia.opis
 			FROM (SELECT * FROM Oceny WHERE uczenId = {}) AS OcenyUcznia
 			INNER JOIN Przedmioty ON OcenyUcznia.przedmiotId = Przedmioty.id
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
@@ -188,7 +189,7 @@ class DatabaseManager(MysqlConnection):
   
   	def get_user_events(self, userId):
   		query = """
-			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przemioty.nazwa, Nauczyciel.imie, Nauczyciel.nazwisko, Wydarzenia.tresc
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przemioty.nazwa, Przedmioty.id, Nauczyciel.imie, Nauczyciel.nazwisko, Wydarzenia.tresc
 			FROM Wydarzenia
 			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
 			INNER JOIN Przedmioty ON Lekcje.przedmiot.id = Przedmioty.id
@@ -218,7 +219,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_schedule(self, teacherId):
 		schedule = """
-			SELECT Lekcje.dzien, Lekcje.numerLekcji, Klasy.nazwa, Przedmioty.nazwa, Lekcje.sala
+			SELECT Lekcje.dzien, Lekcje.numerLekcji, Klasy.nazwa, Przedmioty.nazwa, Przedmioty.id, Lekcje.sala
 			FROM Przedmioty
 			INNER JOIN Lekcje ON Przedmioty.id = Lekcje.przedmiotId
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
@@ -232,7 +233,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_pupils(self, teacherId, courseId = None):
 		query = """
-			SELECT Klasy.nazwa, Przedmioty.nazwa, Uczniowie.imie, Uczniowie.nazwisko
+			SELECT Klasy.nazwa, Przedmioty.nazwa, Przedmioty.id, Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
 			FROM Przedmioty
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
 			INNER JOIN Uczniowie ON Klasy.id = Uczniowie.klasaId
@@ -247,3 +248,17 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
+	
+	def get_teacher_pupil_grades(self, pupilId, courseId):
+		query = """
+			SELECT data, ocena, opis
+			FROM Oceny
+			WHERE przedmiotId = {} AND uczenId = {}
+			ORDER BY data DESC
+		""".format(courseId, pupilId)
+		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
+	
