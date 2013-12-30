@@ -19,13 +19,27 @@ def require_pupil(method):
     
     return wrapper
 
-class GradeHandler(BaseHandler):
+class MainHandler(BaseHandler):
+    
+    def _validate_pesel(self, pesel):
+        if self.db.get_type(pesel) != "UCZEN": raise HTTPError(404) # PESEL w URL nie jest ucznia
+        elif self.session["user"] != pesel: raise HTTPError(403)    # PESEL w URL jest inny niż PESEL aktywnego użytkownika
+        
+    @authenticated
+    @require_pupil
+    def get(self, pesel):
+        self._validate_pesel(pesel)
+        self.render("pupil/main.html")
+
+class GradeHandler(MainHandler):
 
     @authenticated
     @require_pupil
-    def get(self, courseStr):    
+    def get(self, pesel, courseStr):
+        self._validate_pesel(pesel)
+        
         courseId = None
-        if courseStr != "all": courseId = int(courseStr)      
+        if courseStr not in ["", "/", "all"]: courseId = int(courseStr)
 
         grades = self.db.get_user_grades(self.session["userId"], courseId)
         self.render("pupil/grades.html", grades = grades)

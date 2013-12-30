@@ -28,7 +28,8 @@ class ClassRegisterApplication(Application):
             # mapowanie url do klas
             (r'/auth/signin', SigninHandler),
             (r'/auth/signout', SignoutHandler),
-            (r'/pupil/grades/(all|\d+)', pupil.GradeHandler),
+            (r'/pupil/(\d{1,11})', pupil.MainHandler),
+            (r'/pupil/(\d{1,11})/grades(/*|all|\d+)', pupil.GradeHandler),
         ]
         
         Application.__init__(self, handlers,
