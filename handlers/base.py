@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # tornado framework
-from tornado.web import RequestHandler, HTTPError
+from tornado.web import authenticated, RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 class BaseHandler(RequestHandler):
@@ -60,4 +60,15 @@ class BaseHandler(RequestHandler):
         if flash is None: return []
         self.clear_cookie(BaseHandler.FLASH_COOKIE)
         return json_decode(flash)
+        
+    @authenticated
+    def get(self):
+        urls = {
+            "UCZEN": "/pupil/{}/".format(self.session["user"]),
+            "NAUCZYCIEL": "teacher/{}/".format(self.session["user"]),
+        }
+        
+        try: self.redirect(urls[self.session["type"]])
+        except KeyError: pass
+        raise HTTPError(404)
 

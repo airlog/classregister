@@ -7,6 +7,7 @@ from tornado.options import define, options
 
 # nasze
 from database import DatabaseManager
+from handlers.base import BaseHandler
 from handlers.auth import SigninHandler, SignoutHandler
 from handlers import pupil
 
@@ -26,9 +27,12 @@ class ClassRegisterApplication(Application):
     def __init__(self):
         handlers = [
             # mapowanie url do klas
+            (r'/', BaseHandler),
+            
             (r'/auth/signin', SigninHandler),
             (r'/auth/signout', SignoutHandler),
-            (r'/pupil/(\d{1,11})', pupil.MainHandler),
+            
+            (r'/pupil/(\d{1,11})/{0,1}', pupil.MainHandler),
             (r'/pupil/(\d{1,11})/grades/(.{0}|all|\d+)', pupil.GradeHandler),
             (r'/pupil/(\d{1,11})/schedule/{0,1}', pupil.ScheduleHandler),
             (r'/pupil/(\d{1,11})/events/{0,1}', pupil.EventHandler),
