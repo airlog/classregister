@@ -15,8 +15,8 @@
 		{% for g in grades %}
 			<tr>
 				<td>{{ g["data"] }}</td>
-				<td>{{ g["ocena"] }}</td>
-				<td>{{ g["nazwa"] }}</td>
+				<td class="right">{{ g["ocena"] }}</td>
+				<td> <a href="{{ g["id"]}}">{{ g["nazwa"] }}</a></td>
 				<td>{{ g["imie"] }} {{ g["nazwisko"] }}</td>
 				<td>{{ g["opis"] }}</td>
 			</tr>

@@ -1,0 +1,28 @@
+{% extends main.html %}
+
+{% block title %}eDziennik - wydarzenia{% end %}
+
+{% block content %}
+<h2>Wydarzenia</h2>
+	<table>
+		<tr>
+			<th>data</th>
+			<th>dzień</th>
+			<th>lekcja</th>
+			<th>przedmiot</th>
+			<th>nauczyciel</th>
+			<th>tresc</th>
+		</tr>
+		{% for e in events %}
+			<tr>
+				<td>{{ e["data"] }}</td>
+				<td>{{ e["dzien"] }}</td>
+				<td class="right">{{ e["numerLekcji"] }}</td>
+				<td><a href="{{ ../grades/e["id"]}}">{{ e["nazwa"] }}</a></td>
+				<td>{{ e["imie"] }} {{ e["nazwisko"] }}</td>
+				<td>{{ e["tresc"] }}</td>
+			</tr>
+		{% end %}
+  </table>
+{% end %}
+
