@@ -95,6 +95,17 @@ class DatabaseManager(MysqlConnection):
 		PRIMARY KEY (id)
 	) collate utf8_general_ci;
 	"""
+	CREATE_TABLE_NIEOBECNOSCI = """CREATE TABLE IF NOT EXISTS Nieobecnosci (
+		id INT AUTO_INCREMENT,
+		uczenId INT,
+		data DATE,
+		lekcjaID INT,
+		
+		PRIMARY KEY (id),
+		FOREIGN KEY (uczenId) REFERENCES Uczniowie(id),
+		FOREIGN KEY (lekcjaId) REFERENCES Lekcje(id)
+	) collate utf8_general_ci;
+	"""
 	
 	def __init__(self, host, user, password, database, charset = "utf8"):
 		MysqlConnection.__init__(self, host, database, user, password, chset = charset)
@@ -109,7 +120,8 @@ class DatabaseManager(MysqlConnection):
 		self.execute(DatabaseManager.CREATE_TABLE_PRZEDMIOTY)
 		self.execute(DatabaseManager.CREATE_TABLE_LEKCJE)
 		self.execute(DatabaseManager.CREATE_TABLE_OCENY)
-
+		self.execute(DatabaseManager.CREATE_TABLE_NIEOBECNOSCI)
+		
 	### dla kazdego:
 
 	def get_type(self, login):
@@ -133,7 +145,9 @@ class DatabaseManager(MysqlConnection):
 			FROM Loginy INNER JOIN Nauczyciele ON Nauczyciele.pesel = Loginy.login 
 			WHERE Loginy.login = {} AND Loginy.typ = "{}"
 			""".format(login,type)
-		
+		else:
+			raise ValueError("Typ {} nie istnieje".format(type))		
+
 		result = self.query(query)
 		if (result is not None and len(result)>0):
 			return result[0]
@@ -180,13 +194,26 @@ class DatabaseManager(MysqlConnection):
 			INNER JOIN Przedmioty ON Lekcje.przedmiot.id = Przedmioty.id
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
 			WHERE Przedmioty.klasaId = (SELECT klasaId FROM Uczniowie WHERE id = {})
-			ORDER BY Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji
+			ORDER BY Wydarzenia.data DESC, Lekcje.dzien, Lekcje.numerLekcji
 			""".format(userId)
 		result = self.query(query)
   		if result is not None:
 			return result
 		return []
 	
+	def get_user_absence(self, userId):
+		query = """
+			SELECT Nieobecnosci.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Przedmioty.nazwa
+			FROM Nieobecnosci 
+			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
+			INNER JOIN Przedmioty ON Lekscje.przedmiotId = Przedmioty.id
+			WHERE UczenId = {}
+			ORDER BY Nieobecnosci.data DESC. Lekcje.dzien DESC, Lekcje.numerLekcji
+			""".format(userId)
+		result = self.query(query)
+  		if result is not None:
+			return result
+		return []		
 	# dla nauczyciela:
 	
 	def get_teacher_schedule(self, teacherId):
