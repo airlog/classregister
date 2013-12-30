@@ -95,14 +95,26 @@ class DatabaseManager(MysqlConnection):
 		PRIMARY KEY (id)
 	) collate utf8_general_ci;
 	"""
+	
 	CREATE_TABLE_NIEOBECNOSCI = """CREATE TABLE IF NOT EXISTS Nieobecnosci (
 		id INT AUTO_INCREMENT,
 		uczenId INT,
 		data DATE,
-		lekcjaID INT,
+		lekcjaId INT,
 		
 		PRIMARY KEY (id),
 		FOREIGN KEY (uczenId) REFERENCES Uczniowie(id),
+		FOREIGN KEY (lekcjaId) REFERENCES Lekcje(id)
+	) collate utf8_general_ci;
+	"""
+	
+	CREATE_TABLE_WYDARZENIA = """CREATE TABLE IF NOT EXISTS Wydarzenia (
+		id INT AUTO_INCREMENT,
+		data DATE,
+		lekcjaId INT,
+		tresc VARCHAR(1024),
+				
+		PRIMARY KEY (id),
 		FOREIGN KEY (lekcjaId) REFERENCES Lekcje(id)
 	) collate utf8_general_ci;
 	"""
@@ -121,7 +133,8 @@ class DatabaseManager(MysqlConnection):
 		self.execute(DatabaseManager.CREATE_TABLE_LEKCJE)
 		self.execute(DatabaseManager.CREATE_TABLE_OCENY)
 		self.execute(DatabaseManager.CREATE_TABLE_NIEOBECNOSCI)
-		
+		self.execute(DatabaseManager.CREATE_TABLE_WYDARZENIA)
+				
 	### dla kazdego:
 
 	def get_type(self, login):
@@ -149,7 +162,7 @@ class DatabaseManager(MysqlConnection):
 			raise ValueError("Typ {} nie istnieje".format(type))		
 
 		result = self.query(query)
-		if (result is not None and len(result)>0):
+		if result is not None and len(result)>0:
 			return result[0]
 		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
 		
@@ -171,7 +184,7 @@ class DatabaseManager(MysqlConnection):
  
 	def get_user_grades(self, userId, courseId = None): 		
 		query = """
-			SELECT OcenyUcznia.data, OcenyUcznia.ocena, Przedmioty.nazwa, Nauczyciele.imie, Nauczyciele.nazwisko, OcenyUcznia.opis
+			SELECT OcenyUcznia.data, OcenyUcznia.ocena, Przedmioty.nazwa, Przedmioty.id, Nauczyciele.imie, Nauczyciele.nazwisko, OcenyUcznia.opis
 			FROM (SELECT * FROM Oceny WHERE uczenId = {}) AS OcenyUcznia
 			INNER JOIN Przedmioty ON OcenyUcznia.przedmiotId = Przedmioty.id
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
@@ -188,10 +201,10 @@ class DatabaseManager(MysqlConnection):
   
   	def get_user_events(self, userId):
   		query = """
-			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przemioty.nazwa, Nauczyciel.imie, Nauczyciel.nazwisko, Wydarzenia.tresc
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Przedmioty.id, Nauczyciele.imie, Nauczyciele.nazwisko, Wydarzenia.tresc
 			FROM Wydarzenia
 			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
-			INNER JOIN Przedmioty ON Lekcje.przedmiot.id = Przedmioty.id
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
 			INNER JOIN Nauczyciele ON Przedmioty.nauczycielId = Nauczyciele.id
 			WHERE Przedmioty.klasaId = (SELECT klasaId FROM Uczniowie WHERE id = {})
 			ORDER BY Wydarzenia.data DESC, Lekcje.dzien, Lekcje.numerLekcji
@@ -218,7 +231,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_schedule(self, teacherId):
 		schedule = """
-			SELECT Lekcje.dzien, Lekcje.numerLekcji, Klasy.nazwa, Przedmioty.nazwa, Lekcje.sala
+			SELECT Lekcje.dzien, Lekcje.numerLekcji, Klasy.nazwa, Przedmioty.nazwa, Przedmioty.id, Lekcje.sala
 			FROM Przedmioty
 			INNER JOIN Lekcje ON Przedmioty.id = Lekcje.przedmiotId
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
@@ -232,7 +245,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_pupils(self, teacherId, courseId = None):
 		query = """
-			SELECT Klasy.nazwa, Przedmioty.nazwa, Uczniowie.imie, Uczniowie.nazwisko
+			SELECT Klasy.nazwa, Przedmioty.nazwa, Przedmioty.id, Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
 			FROM Przedmioty
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
 			INNER JOIN Uczniowie ON Klasy.id = Uczniowie.klasaId
@@ -242,6 +255,40 @@ class DatabaseManager(MysqlConnection):
 		if courseId is not None:
 			query += "\nAND Przedmioty.przedmiotId = {}".format(courseId) 			
 		query += "\nORDER BY Klasy.nazwa, Uczniowie.nazwisko, Uczniowie.imie"
+		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
+	
+	def get_teacher_pupil_grades(self, pupilId, courseId):
+		query = """
+			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Przedmioty.id, Przedmioty.nazwa, Oceny.data, Oceny.ocena, Oceny.opis
+			FROM Oceny
+			INNER JOIN Uczniowie ON Oceny.uczenId = Uczniowie.id
+			INNER JOIN Przedmioty ON Oceny.przedmiotId = Przedmioty.id
+			WHERE przedmiotId = {} AND uczenId = {}
+			ORDER BY data DESC
+		""".format(courseId, pupilId)
+		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
+	
+	def get_teacher_events(self, teacherId, courseId = None):
+		query = """
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Przemioty.id, Klasy.nazwa, Klasy.id, Wydarzenia.tresc
+			FROM Wydarzenia
+			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE Przedmioty.nauczycielId = {}
+		""".format(teacherId)
+
+		if courseId != None:
+			query += "AND Przedmioty.id = {}\n".format(courseId)
+		query += "ORDER BY Wydarzenia.data DESC"
 		
 		result = self.query(query)
 		if result is not None:
