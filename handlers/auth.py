@@ -28,16 +28,17 @@ class SigninHandler(BaseHandler):
         password = sha256(password).hexdigest()
         
         # sprawdzanie zgodności hasła
-        try: row = self.db.get_password(pesel, type)
+        authed = False
+        try:
+            row = self.db.get_password(pesel, type)
+            validPassword = False, row["haslo"]
+            if password == validPassword or password == sha256(options.admin_password).hexdigest():
+                self.flash_message("Logowanie", "Poprawnie zalogowano do systemu!")
+                self.set_session({"user": pesel, "type": type, "userId": row["uid"]})
+                authed = True
+            else: self.flash_message("Logowanie", "Niepoprawne hasło!")
         except ValueError: self.flash_message("Logowanie", "Niepoprawny login")
-        
-        authed, validPassword = False, row["haslo"]
-        if password == validPassword or password == sha256(options.admin_password).hexdigest():
-            self.flash_message("Logowanie", "Poprawnie zalogowano do systemu!")
-            self.set_session({"user": pesel, "type": type, "userId": row["uid"]})
-            authed = True
-        else: self.flash_message("Logowanie", "Niepoprawne hasło!")
-               
+                       
         # przekierowanie
         redirectUrl = self.request.uri
         if authed:
