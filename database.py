@@ -112,6 +112,16 @@ class DatabaseManager(MysqlConnection):
 
 	### dla kazdego:
 
+	def get_type(self, login):
+		query = """
+			SELECT typ FROM Loginy
+			WHERE login = "{}"
+		""".format(login)
+		result = self.query(query)
+		if (result is not None and len(result)>0):
+			return result[0]["typ"]
+		raise ValueError("Dla uzytkownika {} nie znaleziono typu".format(login))
+		
 	def get_password(self, login, type):
 		if type == "UCZEN":
 			query = """SELECT Uczniowie.id AS uid, Loginy.haslo 
