@@ -29,7 +29,7 @@ class ClassRegisterApplication(Application):
             (r'/auth/signin', SigninHandler),
             (r'/auth/signout', SignoutHandler),
             (r'/pupil/(\d{1,11})', pupil.MainHandler),
-            (r'/pupil/(\d{1,11})/grades(/{0,1}|/all|/\d+)', pupil.GradeHandler),
+            (r'/pupil/(\d{1,11})/grades/(.{0}|all|\d+)', pupil.GradeHandler),
             (r'/pupil/(\d{1,11})/schedule/{0,1}', pupil.ScheduleHandler),
             (r'/pupil/(\d{1,11})/events/{0,1}', pupil.EventHandler),
         ]
