@@ -100,10 +100,21 @@ class DatabaseManager(MysqlConnection):
 		id INT AUTO_INCREMENT,
 		uczenId INT,
 		data DATE,
-		lekcjaID INT,
+		lekcjaId INT,
 		
 		PRIMARY KEY (id),
 		FOREIGN KEY (uczenId) REFERENCES Uczniowie(id),
+		FOREIGN KEY (lekcjaId) REFERENCES Lekcje(id)
+	) collate utf8_general_ci;
+	"""
+	
+	CREATE_TABLE_WYDARZENIA = """CREATE TABLE IF NOT EXISTS Wydarzenia (
+		id INT AUTO_INCREMENT,
+		data DATE,
+		lekcjaId INT,
+		tresc VARCHAR(1024),
+				
+		PRIMARY KEY (id),
 		FOREIGN KEY (lekcjaId) REFERENCES Lekcje(id)
 	) collate utf8_general_ci;
 	"""
@@ -122,7 +133,8 @@ class DatabaseManager(MysqlConnection):
 		self.execute(DatabaseManager.CREATE_TABLE_LEKCJE)
 		self.execute(DatabaseManager.CREATE_TABLE_OCENY)
 		self.execute(DatabaseManager.CREATE_TABLE_NIEOBECNOSCI)
-		
+		self.execute(DatabaseManager.CREATE_TABLE_WYDARZENIA)
+				
 	### dla kazdego:
 
 	def get_type(self, login):
@@ -251,8 +263,10 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_pupil_grades(self, pupilId, courseId):
 		query = """
-			SELECT data, ocena, opis
+			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Przedmioty.id, Przedmioty.nazwa, Oceny.data, Oceny.ocena, Oceny.opis
 			FROM Oceny
+			INNER JOIN Uczniowie ON Oceny.uczenId = Uczniowie.id
+			INNER JOIN Przedmioty ON Oceny.przedmiotId = Przedmioty.id
 			WHERE przedmiotId = {} AND uczenId = {}
 			ORDER BY data DESC
 		""".format(courseId, pupilId)
@@ -262,3 +276,21 @@ class DatabaseManager(MysqlConnection):
 			return result
 		return []
 	
+	def get_teacher_events(self, teacherId, courseId = None):
+		query = """
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Przemioty.id, Klasy.nazwa, Klasy.id, Wydarzenia.tresc
+			FROM Wydarzenia
+			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE Przedmioty.nauczycielId = {}
+		""".format(teacherId)
+
+		if courseId != None:
+			query += "AND Przedmioty.id = {}\n".format(courseId)
+		query += "ORDER BY Wydarzenia.data DESC"
+		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
