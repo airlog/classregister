@@ -49,3 +49,23 @@ class GradeHandler(MainHandler):
         grades = self.db.get_user_grades(self.session["userId"], courseId)
         self.render("pupil/grades.html", grades = grades)
 
+class ScheduleHandler(MainHandler):
+
+    @authenticated
+    @require_pupil("/teacher/SESSION_USER/schedule")
+    def get(self, pesel):
+        self._validate_pesel(pesel)
+
+        schedule = self.db.get_user_schedule(self.session["userId"])
+        self.render("pupil/schedule.html", schedule = schedule)
+
+class EventHandler(MainHandler):
+
+    @authenticated
+    @require_pupil("/teacher/SESSION_USER/")
+    def get(self, pesel):
+        self._validate_pesel(pesel)
+        
+        events = self.db.get_user_events(self.session["userId"])
+        self.render("pupil/events.html", events = events)
+
