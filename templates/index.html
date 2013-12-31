@@ -8,7 +8,7 @@
 <body>
 
 {% block outer_menu %}
-    <div class="menu">
+    <div id="menu">
 	    {% block menu %}
 	    {% end %}
 	    <br/>
@@ -16,15 +16,17 @@
 {% end outer_menu %}
 
 {% if is_flash() %}
-    {% block flash_messages %}
-        <hr/>
-        <br/>
-        {% for message in get_flash() %}
-            <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i><br/>
+    <div id="flashes">
+        {% block flash_messages %}
+            <hr/>
+            <br/>
+            {% for message in get_flash() %}
+                <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i><br/>
+            {% end %}
+            <br/>
+            <hr/>
         {% end %}
-        <br/>
-        <hr/>
-    {% end %}
+    </div>
 {% end %}
 
 {% block content %}

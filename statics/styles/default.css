@@ -54,7 +54,8 @@ a:hover {
     background-color: transparent;
 }
 
-.menu {
+/* id */
+#menu, #flashes {
 	background-color: pink;
 	opacity: 0.8;
 }
