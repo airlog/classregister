@@ -54,6 +54,10 @@ a:hover {
     background-color: transparent;
 }
 
+.menu_link {
+	margin-right: 15px;
+}
+
 /* id */
 #menu, #flashes {
 	background-color: pink;
