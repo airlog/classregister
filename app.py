@@ -39,6 +39,8 @@ class ClassRegisterApplication(Application):
             (r'/pupil/(\d{1,11})/absence/{0,1}', pupil.AbsenceHandler),
         
             (r'/teacher/(\d{1,11})/{0,1}', teacher.MainHandler),
+            (r'/teacher/(\d{1,11})/schedule/{0,1}', teacher.ScheduleHandler),
+            (r'/teacher/(\d{1,11})/events/{0,1}', teacher.EventHandler),
         ]
         
         Application.__init__(self, handlers,

@@ -34,3 +34,24 @@ class MainHandler(BaseHandler):
         self._validate_pesel(pesel)
         self.render("teacher/main.html")
 
+class ScheduleHandler(MainHandler):
+
+    @authenticated
+    @require_teacher()
+    def get(self, pesel):
+        self._validate_pesel(pesel)
+        
+        schedule = self.db.get_teacher_schedule(self.session["userId"])        
+        self.render("teacher/schedule.html", schedule = schedule)
+
+class EventHandler(MainHandler):
+
+    @authenticated
+    @require_teacher()
+    def get(self, pesel):
+        self._validate_pesel(pesel)
+        
+        events = self.db.get_teacher_events(self.session["userId"])        
+        self.render("teacher/events.html", events = events)
+
+
