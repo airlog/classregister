@@ -3,7 +3,8 @@
 {% block title %}eDziennik - oceny ucznia{% end %}
 
 {% block content %}
-<h2>Oceny</h2>
+<div class="marginize">
+    <h2>Oceny</h2>
 	<table>
 		<tr>
 			<th>data</th>
@@ -21,6 +22,7 @@
 				<td>{{ g["opis"] }}</td>
 			</tr>
 		{% end %}
-  </table>
+    </table>
+</div>
 {% end %}
 

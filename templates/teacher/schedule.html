@@ -3,7 +3,8 @@
 {% block title %}eDziennik - plan lekcji{% end %}
 
 {% block content %}
-<h2>Plan lekcji</h2>
+<div class="marginize">
+    <h2>Plan lekcji</h2>
 	<table>
 		<tr>
 			<th>dzień</th>
@@ -21,6 +22,7 @@
 				<td>{{ s["sala"] }}</td>
 			</tr>
 		{% end %}
-  </table>
+    </table>
+</div>
 {% end %}
 

@@ -3,42 +3,44 @@
 {% block title %}eDziennik - wydarzenia{% end %}
 
 {% block content %}
-<h2>Wydarzenia</h2>
+<div class="marginize">
+    <h2>Wydarzenia</h2>
 	<table>
-		<tr>
-			<th>data</th>
-			<th>dzień</th>
-			<th>lekcja</th>
-			<th>przedmiot</th>
-			<th>klasa</th>
-			<th>tresc</th>
-			<th></th>
-			<th></th>
-		</tr>
-		{% for e in events %}
-			<tr>
-				<td>{{ e["data"] }}</td>
-				<td>{{ e["dzien"] }}</td>
-				<td class="right">{{ e["numerLekcji"] }}</td>
-				<td><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
-				<td>{{ e["nazwa"] }}</td>
-				<td>{{ e["tresc"] }}</td>
-				<td><button style="width:100%;" >x</button></td>
-				<td><button>edit</button></td>
-			</tr>
-		{% end %}
-		<tr id="new_data" class="hidable">
-			<form action="" method="POST">
-				<td><input name="data" size="10" type="text"/></td>	
-				<td><input name="dzien" style="width:100%;" size="1" type="text"/></td>	
-				<td><input name="lekcja" style="width:100%;" size="1" type="text"/></td>	
-				<td><input name="przedmiot" size="20" type="text"/></td>	
-				<td><input name="klasa" size="5" type="text"/></td>	
-				<td><input name="tresc" style="width:100%;" type="text"/></td>	
-				<td><button>OK</button></td>	
-			</form>
-		</tr>
-		<tr><td colspan="8" style="text-align:center;"><button onclick="changeVisibility('new_data')">Dodaj nowy</button></td></tr>
-  </table>
+	    <tr>
+	        <th>data</th>
+		    <th>dzień</th>
+		    <th>lekcja</th>
+		    <th>przedmiot</th>
+		    <th>klasa</th>
+		    <th>tresc</th>
+		    <th></th>
+		    <th></th>
+	    </tr>
+	    {% for e in events %}
+		    <tr>
+			    <td>{{ e["data"] }}</td>
+			    <td>{{ e["dzien"] }}</td>
+			    <td class="right">{{ e["numerLekcji"] }}</td>
+			    <td><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
+			    <td>{{ e["nazwa"] }}</td>
+			    <td>{{ e["tresc"] }}</td>
+			    <td><button style="width:100%;" >x</button></td>
+			    <td><button>edit</button></td>
+		    </tr>
+	    {% end %}
+	    <tr id="new_data" class="hidable">
+		    <form action="" method="POST">
+			    <td><input name="data" size="10" type="text"/></td>	
+			    <td><input name="dzien" style="width:100%;" size="1" type="text"/></td>	
+			    <td><input name="lekcja" style="width:100%;" size="1" type="text"/></td>	
+			    <td><input name="przedmiot" size="20" type="text"/></td>	
+			    <td><input name="klasa" size="5" type="text"/></td>	
+			    <td><input name="tresc" style="width:100%;" type="text"/></td>	
+			    <td><button>OK</button></td>	
+		    </form>
+	    </tr>
+	    <tr><td colspan="8" style="text-align:center;"><button onclick="changeVisibility('new_data')">Dodaj nowy</button></td></tr>
+    </table>
+</div>
 {% end %}
 

@@ -58,9 +58,18 @@ a:hover {
 	margin-right: 15px;
 }
 
+.marginize {
+    margin: 10px;
+}
+
 /* id */
 #menu, #flashes {
 	background-color: pink;
 	opacity: 0.8;
+}
+
+#menu {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 

@@ -3,7 +3,8 @@
 {% block title %}eDziennik - nieobecności{% end %}
 
 {% block content %}
-<h2>Nieobecności</h2>
+<div class="marginize">
+    <h2>Nieobecności</h2>
 	<table>
 		<tr>
 			<th>data</th>
@@ -19,6 +20,7 @@
 				<td> <a href="/pupil/{{ current_user["user"] }}/grades/{{ a["id"]}}">{{ a["nazwa"] }}</a></td>
 			</tr>
 		{% end %}
-  </table>
+    </table>
+</div>
 {% end %}
 

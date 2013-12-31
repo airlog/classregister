@@ -3,7 +3,8 @@
 {% block title %}eDziennik - wydarzenia{% end %}
 
 {% block content %}
-<h2>Wydarzenia</h2>
+<div class="marginize">
+    <h2>Wydarzenia</h2>
 	<table>
 		<tr>
 			<th>data</th>
@@ -23,6 +24,7 @@
 				<td>{{ e["tresc"] }}</td>
 			</tr>
 		{% end %}
-  </table>
+    </table>
+</div>
 {% end %}
 
