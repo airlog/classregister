@@ -69,3 +69,13 @@ class EventHandler(MainHandler):
         events = self.db.get_user_events(self.session["userId"])
         self.render("pupil/events.html", events = events)
 
+class AbsenceHandler(MainHandler):
+
+    @authenticated
+    @require_pupil("/teacher/SESSION_USER/")
+    def get(self, pesel):
+        self._validate_pesel(pesel)
+        
+        absenceData = self.db.get_user_absence(self.session["userId"])
+        self.render("pupil/absence.html", absence = absenceData)
+

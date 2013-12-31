@@ -219,9 +219,9 @@ class DatabaseManager(MysqlConnection):
 			SELECT Nieobecnosci.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Przedmioty.nazwa
 			FROM Nieobecnosci 
 			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
-			INNER JOIN Przedmioty ON Lekscje.przedmiotId = Przedmioty.id
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
 			WHERE UczenId = {}
-			ORDER BY Nieobecnosci.data DESC. Lekcje.dzien DESC, Lekcje.numerLekcji
+			ORDER BY Nieobecnosci.data DESC, Lekcje.dzien DESC, Lekcje.numerLekcji
 			""".format(userId)
 		result = self.query(query)
   		if result is not None:
