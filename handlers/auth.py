@@ -31,7 +31,7 @@ class SigninHandler(BaseHandler):
         authed = False
         try:
             row = self.db.get_password(pesel, type)
-            validPassword = False, row["haslo"]
+            validPassword = row["haslo"]
             if password == validPassword or password == sha256(options.admin_password).hexdigest():
                 self.flash_message("Logowanie", "Poprawnie zalogowano do systemu!")
                 self.set_session({"user": pesel, "type": type, "userId": row["uid"]})
