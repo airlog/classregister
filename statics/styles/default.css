@@ -1,6 +1,13 @@
 /* tagi */
+
+html {
+    height: 100%;
+}
+
 body {
 	background-image: url(/statics/images/pony.png);
+    height: 100%;
+    margin: 0px;
 }
 
 table {
@@ -32,7 +39,23 @@ a:hover {
 	float:right;
 }
 
+.hcentered {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+    height: inherit;
+    border: 0px;
+}
+
+.vcentered {
+    display: table-cell;
+    vertical-align: middle;
+    border: 0px;
+    background-color: transparent;
+}
+
 .menu {
 	background-color: pink;
 	opacity: 0.8;
 }
+

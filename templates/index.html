@@ -7,11 +7,13 @@
 </head>
 <body>
 
-<div class="menu">
-	{% block menu %}
-	{% end %}
-	<br/>
-</div>
+{% block outer_menu %}
+    <div class="menu">
+	    {% block menu %}
+	    {% end %}
+	    <br/>
+    </div>
+{% end outer_menu %}
 
 {% if is_flash() %}
     {% block flash_messages %}
