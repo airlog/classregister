@@ -9,7 +9,7 @@ from tornado.options import define, options
 from database import DatabaseManager
 from handlers.base import BaseHandler
 from handlers.auth import SigninHandler, SignoutHandler
-from handlers import pupil
+from handlers import pupil, teacher
 
 # konfiguracja modułu options
 define("config", help = "Specify configuration file")
@@ -37,6 +37,8 @@ class ClassRegisterApplication(Application):
             (r'/pupil/(\d{1,11})/schedule/{0,1}', pupil.ScheduleHandler),
             (r'/pupil/(\d{1,11})/events/{0,1}', pupil.EventHandler),
             (r'/pupil/(\d{1,11})/absence/{0,1}', pupil.AbsenceHandler),
+        
+            (r'/teacher/(\d{1,11})/{0,1}', teacher.MainHandler),
         ]
         
         Application.__init__(self, handlers,
