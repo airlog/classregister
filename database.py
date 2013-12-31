@@ -227,11 +227,12 @@ class DatabaseManager(MysqlConnection):
   		if result is not None:
 			return result
 		return []		
+		
 	# dla nauczyciela:
 	
 	def get_teacher_schedule(self, teacherId):
 		schedule = """
-			SELECT Lekcje.dzien, Lekcje.numerLekcji, Klasy.nazwa, Przedmioty.nazwa, Przedmioty.id, Lekcje.sala
+			SELECT Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Klasy.nazwa, Przedmioty.nazwa AS przedmiot, Lekcje.sala
 			FROM Przedmioty
 			INNER JOIN Lekcje ON Przedmioty.id = Lekcje.przedmiotId
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
@@ -278,7 +279,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_events(self, teacherId, courseId = None):
 		query = """
-			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa, Przemioty.id, Klasy.nazwa, Klasy.id, Wydarzenia.tresc
+			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa AS przedmiot, Przedmioty.id, Klasy.nazwa, Wydarzenia.tresc
 			FROM Wydarzenia
 			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
 			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id

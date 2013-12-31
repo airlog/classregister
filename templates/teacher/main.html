@@ -4,6 +4,9 @@
 
 {% block menu %}
 	<h1>e-Dziennik</h1>
+	<a href="/teacher/{{ current_user["user"] }}/schedule">PLAN LEKCJI</a>
+	<a href="/teacher/{{ current_user["user"] }}/events">WYDARZENIA</a>
+	<a href="/teacher/{{ current_user["user"] }}/groups/">KLASY</a>
 	<a class="right" href="/auth/signout"> WYLOGUJ</a>
 {% end %}
 
