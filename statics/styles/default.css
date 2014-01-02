@@ -62,14 +62,21 @@ a:hover {
     margin: 10px;
 }
 
+.flash {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 /* id */
 #menu, #flashes {
 	background-color: pink;
 	opacity: 0.8;
-}
-
-#menu {
     padding-left: 10px;
     padding-right: 10px;
+}
+
+#flashes {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 

@@ -19,13 +19,14 @@
 {% if is_flash() %}
     <div id="flashes">
         {% block flash_messages %}
-            <hr/>
-            <br/>
+            {% set ctr = 0 %}
             {% for message in get_flash() %}
-                <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i><br/>
+                <div id="flash_message_{{ ctr }}" class="flash">
+                    <b>{{ message[0] }}</b>: <i>{{ message[1] }}</i>
+                    <span style="float: right;" onclick="changeVisibility('flash_message_{{ ctr }}')">X</span>
+                </div>
+                {% set ctr = ctr + 1 %}
             {% end %}
-            <br/>
-            <hr/>
         {% end %}
     </div>
 {% end %}
