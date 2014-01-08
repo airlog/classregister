@@ -120,7 +120,7 @@ class DatabaseManager(MysqlConnection):
 	"""
 	
 	def __init__(self, host, user, password, database, charset = "utf8"):
-		MysqlConnection.__init__(self, host, database, user, password, chset = charset)
+		MysqlConnection.__init__(self, host, database, user, password, charset = charset)
 		
 		self.__create_tables()
     

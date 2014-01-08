@@ -30,9 +30,8 @@
 	    {% end %}
 	    <tr id="new_data" class="hidable">
 		    <form action="" method="POST">
-			    <td><input name="data" size="10" type="text"/></td>	
-			    <td><input name="dzien" style="width:100%;" size="1" type="text"/></td>	
-			    <td><input name="lekcja" style="width:100%;" size="1" type="text"/></td>	
+			    <td colspan="2"><input name="data" size="10" type="date"/></td>	
+			    <td><input name="lekcja" style="width:100%;" size="1" type="number" min="0" max="10"/></td>	
 			    <td><input name="przedmiot" size="20" type="text"/></td>	
 			    <td><input name="klasa" size="5" type="text"/></td>	
 			    <td><input name="tresc" style="width:100%;" type="text"/></td>	
