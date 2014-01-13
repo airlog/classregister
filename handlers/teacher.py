@@ -44,14 +44,35 @@ class ScheduleHandler(MainHandler):
         schedule = self.db.get_teacher_schedule(self.session["userId"])        
         self.render("teacher/schedule.html", schedule = schedule)
 
+from tornado.escape import json_encode        
 class EventHandler(MainHandler):
 
+    def __fill_attributes(self, attrs):        
+        for key in attrs: attrs[key] = self.get_argument(key)
+        return attrs
+    
+    def __assert_attributes(self, attrs):
+        for key, value in attrs.items():
+            if value is None or value == "": raise HTTPError(405, "Illegal value of '{}': '{}'".format(key, value))
+    
     @authenticated
     @require_teacher()
-    def get(self, pesel):
+    def get(self, pesel, task, eventId):
         self._validate_pesel(pesel)
+        print("task = {}".format(task))
+        if task is not None and task != "": raise HTTPError(403)
         
         events = self.db.get_teacher_events(self.session["userId"])        
         self.render("teacher/events.html", events = events)
 
+    @authenticated
+    @require_teacher()
+    def post(self, pesel, task, eventId):
+        self._validate_pesel(pesel)
+        
+        task = task.split("/")[0]
+        attrs = self.__fill_attributes({"_xsrf": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        self.__assert_attributes(attrs)
+        
+        self.write(json_encode(attrs) + "<br/>" + json_encode([pesel, task, eventId]))
 

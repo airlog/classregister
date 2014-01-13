@@ -3,6 +3,16 @@
 {% block title %}eDziennik - wydarzenia{% end %}
 
 {% block content %}
+<datalist id="przedmioty">
+<!--
+    TODO:
+    mogę tutaj dać AUTOCOMPLETE dla wszystkich przedmiotów z bazy danych uczonych
+    przez danego nauczyciela; potrzebuję tylko zapytanie :-)
+-->
+    <option value="fizyka"/>
+    <option value="język polski"/>
+</datalist>
+
 <div class="marginize">
     <h2>Wydarzenia</h2>
 	<table>
@@ -17,25 +27,48 @@
 		    <th></th>
 	    </tr>
 	    {% for e in events %}
-		    <tr>
-			    <td>{{ e["data"] }}</td>
-			    <td>{{ e["dzien"] }}</td>
-			    <td class="right">{{ e["numerLekcji"] }}</td>
-			    <td><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
-			    <td>{{ e["nazwa"] }}</td>
-			    <td>{{ e["tresc"] }}</td>
+		    <tr id="event{{ e["chuj"] }}">
+			    <td class="textright">{{ e["data"] }}</td>
+			    <td class="textright">{{ e["dzien"] }}</td>
+			    <td class="textright">{{ e["numerLekcji"] }}</td>
+			    <td class="textright"><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
+			    <td class="textright">{{ e["nazwa"] }}</td>
+			    <td class="textright">{{ e["tresc"] }}</td>
 			    <td><button style="width:100%;" >x</button></td>
-			    <td><button>edit</button></td>
+			    <td><button onclick="changeVisibility('editfield{{ e["chuj"] }}')">edit</button></td>
 		    </tr>
+		    
+		    <!-- ukryty wiersz, który będzie służył do edycji -->
+	        <tr id="editfield{{ e["chuj"] }}" class="hidable">
+	            <form action="edit/{{ e["chuj"] }}" method="POST">
+		            {% module xsrf_form_html() %}
+		            <input name="eventid" type="hidden"/>
+			        <td colspan="2">
+			            <input name="data" class="textright" size="10" type="date"  value="{{ e["data"] }}" title="poprawna data"/>
+			        </td>	
+			        <td><input name="lekcja" class="textright" style="width:100%;" size="1" type="number" min="0" max="10" value="{{ e["numerLekcji"] }}" title="godzina lekcyjna"/></td>	
+			        <td><input name="przedmiot" class="textright" size="20" type="text" list="przedmioty" value="{{ e["przedmiot"] }}" title="nazwa przedmiotu"/></td>   	
+			        <td><input name="klasa" class="textright" size="5" type="text" pattern="(\d{4})(\w+)" value="{{ e["nazwa"] }}" title="np. 2014A"/></td>	
+			        <td><input name="tresc" class="textright" style="width:100%;" type="text" value="{{ e["tresc"] }}" title="lakonicznie opisz wydarzenie"/></td>	
+			        <td><input type="submit" value="Ok"/></td>
+			        <td><input type="button" value="Anuluj" onclick="changeVisibility('editfield{{ e["chuj"] }}')"/></td>	
+		        </form>
+	        </tr>
 	    {% end %}
-	    <tr id="new_data" class="hidable">
-		    <form action="" method="POST">
-			    <td colspan="2"><input name="data" size="10" type="date"/></td>	
-			    <td><input name="lekcja" style="width:100%;" size="1" type="number" min="0" max="10"/></td>	
-			    <td><input name="przedmiot" size="20" type="text"/></td>	
-			    <td><input name="klasa" size="5" type="text"/></td>	
-			    <td><input name="tresc" style="width:100%;" type="text"/></td>	
-			    <td><button>OK</button></td>	
+	    <tr></tr>
+	    <tr id="new_data" class="hidable">		    
+		    <form action="new" method="POST">
+		        {% module xsrf_form_html() %}
+			    <td colspan="2">
+			        <input name="data" class="textright" size="10" type="date" title="poprawna data"/>
+			    </td>	
+			    <td><input name="lekcja" class="textright" style="width:100%;" size="1" type="number" min="0" max="10" title="godzina lekcyjna"/></td>	
+			    <td><input name="przedmiot" class="textright" size="20" type="text" list="przedmioty" title="nazwa przedmiotu"/></td>   	
+			    <td><input name="klasa" class="textright" size="5" type="text" pattern="(\d{4})(\w+)" title="np. 2014A"/></td>	
+			    <td><input name="tresc" class="textright" style="width:100%;" type="text" title="lakonicznie opisz wydarzenie"/></td>	
+			    <td colspan="2" style="text-align: center;">
+			        <input type="submit" value="Dodaj"/>
+			    </td>	
 		    </form>
 	    </tr>
 	    <tr><td colspan="8" style="text-align:center;"><button onclick="changeVisibility('new_data')">Dodaj nowy</button></td></tr>

@@ -1,3 +1,4 @@
+
 display_type = new Array();
 function changeVisibility(id) {
 	element = document.getElementById(id);
@@ -14,3 +15,4 @@ function hide(className) {
 	elements = document.getElementsByClassName(className);
 	for (i = 0; i < elements.length; i++) changeVisibility(elements[i].id);
 }
+

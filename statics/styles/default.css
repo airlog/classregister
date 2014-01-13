@@ -39,6 +39,10 @@ a:hover {
 	float:right;
 }
 
+.textright {
+    text-align: right;
+}
+
 .hcentered {
     display: table;
     margin-left: auto;

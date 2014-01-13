@@ -279,7 +279,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_events(self, teacherId, courseId = None):
 		query = """
-			SELECT Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa AS przedmiot, Przedmioty.id, Klasy.nazwa, Wydarzenia.tresc
+			SELECT Wydarzenia.id AS chuj, Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa AS przedmiot, Przedmioty.id, Klasy.nazwa, Wydarzenia.tresc
 			FROM Wydarzenia
 			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
 			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
