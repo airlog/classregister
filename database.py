@@ -326,7 +326,38 @@ class DatabaseManager(MysqlConnection):
 		except MysqlError as e:
 			print("złapałem chuja!")				
 
+	def edit_teacher_event(self, teacherId, eventId, date, lesson, course, group, text):
+		query1 = """
+			SELECT Lekcje.id FROM Lekcje
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE Lekcje.numerLekcji = {}
+			AND Przedmioty.nauczycielId = {}
+			AND Przedmioty.nazwa = "{}"
+			AND Klasy.nazwa = "{}" 
+		""".format(lesson, teacherId, course.encode("cp1250"), group)
+
+		result = self.query(query1)
 		
+		if result is None or len(result) == 0:
+			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
+				 	
+		lessonId = result[0]["id"]
+
+		query2 = """
+			UPDATE Wydarzenia
+			SET data = "{}",
+			lekcjaId = {},
+			tresc = "{}"
+			WHERE id = {}
+			""".format(date,lessonId,text.encode("cp1250"),eventId)
+
+		try:
+			self.execute(query2)
+		except MysqlError as e:
+			print("złapałem chuja!")				
+		
+	
 	def remove_teacher_event(self, eventId):
 
 		query = """
