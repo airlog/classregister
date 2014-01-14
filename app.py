@@ -40,10 +40,15 @@ class ClassRegisterApplication(Application):
         
             (r'/teacher/(\d{1,11})/', teacher.MainHandler),
             (r'/teacher/(\d{1,11})/schedule/', teacher.ScheduleHandler),
+            
             (r'/teacher/(\d{1,11})/events/(.{0})', teacher.EventHandler),
             (r'/teacher/(\d{1,11})/events/(new)', teacher.EventHandler),
             (r'/teacher/(\d{1,11})/events/(del)/(\d+)', teacher.EventHandler),
             (r'/teacher/(\d{1,11})/events/(edit)/(\d+)', teacher.EventHandler),
+            
+            (r'/teacher/(\d{1,11})/groups/', teacher.GroupHandler),
+            (r'/teacher/(\d{1,11})/groups/(\d+)/', teacher.GroupHandler),
+            (r'/teacher/(\d{1,11})/groups/(\d+)/(\d+)/', teacher.GroupHandler),
         ]
         
         Application.__init__(self, handlers,

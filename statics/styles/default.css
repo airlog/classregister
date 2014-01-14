@@ -43,6 +43,10 @@ a:hover {
     text-align: right;
 }
 
+.textcenter {
+    text-align: center;
+}
+
 .hcentered {
     display: table;
     margin-left: auto;

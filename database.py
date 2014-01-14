@@ -248,7 +248,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_groups(self,teacherId):
 		query = """
-			SELECT Klasy.nazwa AS k_nazwa, Klasy.id AS k_id, Przedmioty.nazwa AS p_nazwa, Przedmioty.id As p_id, 
+			SELECT Klasy.nazwa AS k_nazwa, Klasy.id AS k_id, Przedmioty.nazwa AS p_nazwa, Przedmioty.id As p_id 
 			FROM Przedmioty
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
 			WHERE Przedmioty.nauczycielId = {}
@@ -260,13 +260,13 @@ class DatabaseManager(MysqlConnection):
 			return result
 		return []
 	
-	def get_teacher_pupils_in_group(self, courseId):
+	def get_pupils_in_class(self, courseId):
 		query = """
 			SELECT Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
 			FROM Przedmioty
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
 			INNER JOIN Uczniowie ON Klasy.id = Uczniowie.klasaId
-			WHERE Przedmioty.przedmiotId = {}"
+			WHERE Przedmioty.id = {}
 			ORDER BY Uczniowie.nazwisko, Uczniowie.imie
 		""".format(courseId)
 			
@@ -275,7 +275,7 @@ class DatabaseManager(MysqlConnection):
 			return result
 		return []
 	
-	def get_teacher_pupil_grades(self, pupilId, courseId):
+	def get_teacher_pupil_grades(self, courseId, pupilId):
 		query = """
 			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Oceny.data, Oceny.ocena, Oceny.opis
 			FROM Oceny

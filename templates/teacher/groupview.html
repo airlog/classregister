@@ -1,0 +1,53 @@
+{% extends main.html %}
+
+{% block title %}eDziennik - widok grupy{% end %}
+
+{% block content %}
+<div class="marginize">
+    <h2>Wydarzenia</h2>
+	<table>
+	    <tr>
+	        <th>numer</th>
+	        <th style="min-width: 120px;">nazwisko</th>
+	        <th style="min-width: 80px;">imię</th>
+		    <th>nieobecność</th>
+		    <th style="min-width: 200px;">nowa ocena</th>
+		    <th>Szczegóły</th>
+	    </tr>
+	    <tr>
+	        <td colspan="4"></td>
+	        <td class="textcenter"><input type="text" name="opisoceny" title="krótki opis oceny" maxlength="16" class="textright"/></td>
+	    </tr>
+	    
+	    {% set i = 1 %}
+	    {% for p in pupils %}
+	        <tr>
+	            <td class="textcenter">{{ i }}</td>
+	            <td class="textcenter">{{ p["nazwisko"] }}</td>
+	            <td class="textcenter">{{ p["imie"] }}</td>
+	            <td class="textcenter"><input type="checkbox" name="nieobecnosc0"/></td>
+	            <td class="textcenter">
+	                <select class="textright" style="width: 40%;">
+	                    <option></option>
+	                    <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+	                </td>
+	            </td>
+	            <td class="textcenter"><a href="{{ p["id"] }}/"><button>>></button></a></td>
+	        </tr>
+	        {% set i = i + 1 %}
+	    {% end %}
+	    
+	    <tr>
+	        <td colspan="3"></td>
+	        <td class="textcenter"><input type="submit" value="Wstaw nieobecność"/></td>
+	        <td class="textcenter"><input type="submit" value="Wstaw oceny"/></td>
+	    </tr>
+    </table>
+</div>
+{% end %}
+

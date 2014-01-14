@@ -12,7 +12,7 @@
 		</tr>
 		{% for g in groups %}
 			<tr>
-				<td><a href="/teacher//{{ current_user["user"] }}/groups/{{g["p_id"]}}">{{ g["k_nazwa"] }} </a></td>
+				<td><a href="/teacher/{{ current_user["user"] }}/groups/{{g["p_id"]}}/">{{ g["k_nazwa"] }} </a></td>
 				<td>{{ g["p_nazwa"]}}</td>
 			</tr>
 		{% end %}

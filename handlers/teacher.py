@@ -117,3 +117,29 @@ class EventHandler(MainHandler):
         elif task == "del": self.__del_event(eventId)
         else: raise HTTPError(403)
 
+class GroupHandler(MainHandler):
+
+    def __get_groups(self, pesel):
+        groups = self.db.get_teacher_groups(self.session["userId"])
+        self.render("teacher/groups.html", groups = groups)
+        
+    def __get_groupview(self, pesel, courseId):
+        cid = int(courseId) # regex broni, regex chroni!
+        pupils = self.db.get_pupils_in_class(cid)
+        self.render("teacher/groupview.html", pupils = pupils)
+        
+    def __get_pupil(self, pesel, courseId, pupilId):
+        cid, pid = int(courseId), int(pupilId)
+        grades = self.db.get_teacher_pupil_grades(cid, pid)
+        pupilData = self.db.get_pupil_data(pid)
+        self.render("teacher/pupil.html", grades = grades, pupilData = pupilData)
+
+    @authenticated
+    @require_teacher()
+    def get(self, pesel, courseId = None, pupilId = None):
+        self._validate_pesel(pesel)
+          
+        if pupilId is not None: self.__get_pupil(pesel, courseId, pupilId)
+        elif courseId is not None: self.__get_groupview(pesel, courseId);
+        else: self.__get_groups(pesel)
+
