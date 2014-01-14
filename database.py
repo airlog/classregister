@@ -1,5 +1,7 @@
 # coding=utf-8
 
+from MySQLdb import Error as MysqlError
+
 import externals
 from torndb import Connection as MysqlConnection
 
@@ -295,3 +297,45 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
+		
+	def add_teacher_event(self, teacherId, date, lesson, course, group, text):
+
+		query1 = """
+			SELECT Lekcje.id FROM Lekcje
+			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE Lekcje.numerLekcji = {}
+			AND Przedmioty.nauczycielId = {}
+			AND Przedmioty.nazwa = "{}"
+			AND Klasy.nazwa = "{}" 
+		""".format(lesson, teacherId, course.encode("cp1250"), group)
+
+		result = self.query(query1)
+		
+		if result is None or len(result) == 0:
+			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
+				 	
+		lessonId = result[0]["id"]
+
+		query2 = """
+			INSERT INTO Wydarzenia VALUES (NULL,"{}",{},"{}")
+			""".format(date,lessonId,text.encode("cp1250"))
+
+		try:
+			self.execute(query2)
+		except MysqlError as e:
+			print("złapałem chuja!")				
+
+		
+	def remove_teacher_event(self, eventId):
+
+		query = """
+			DELETE * FROM Wydarzenia
+			WHERE id = {}
+		""".format(lesson, eventId)
+		
+		try:
+			self.execute(query)
+		except MysqlError as e:
+			print("złapałem chuja!")
+			 
