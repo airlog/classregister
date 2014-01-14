@@ -100,7 +100,6 @@ class EventHandler(MainHandler):
     @require_teacher()
     def get(self, pesel, task = None, eventId = None):
         self._validate_pesel(pesel)
-        print("task = {}".format(task))
         if task is not None and task != "": raise HTTPError(403)
         
         events = self.db.get_teacher_events(self.session["userId"])        
@@ -131,7 +130,7 @@ class GroupHandler(MainHandler):
     def __get_pupil(self, pesel, courseId, pupilId):
         cid, pid = int(courseId), int(pupilId)
         grades = self.db.get_teacher_pupil_grades(cid, pid)
-        pupilData = self.db.get_pupil_data(pid)
+        pupilData = self.db.get_pupil_data(pid, cid)
         self.render("teacher/pupil.html", grades = grades, pupilData = pupilData)
 
     @authenticated

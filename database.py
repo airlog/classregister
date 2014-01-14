@@ -259,6 +259,20 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
+		
+	def get_pupil_data(self, pupilId, courseId):
+		query = """
+			SELECT Uczniowie.imie, Uczniowie.nazwisko, Klasy.nazwa AS klasa, Przedmioty.nazwa AS przedmiot
+			FROM Uczniowie
+			INNER JOIN Klasy ON Uczniowie.klasaId = Klasy.id
+			INNER JOIN Przedmioty ON Przedmioty.klasaId = Klasy.id
+			WHERE Uczniowie.id = {} AND Przedmioty.id = {}
+		""".format(pupilId, courseId)
+		
+		result = self.query(query)
+		if result is not None:
+			return result[0]
+		return []
 	
 	def get_pupils_in_class(self, courseId):
 		query = """
