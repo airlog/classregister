@@ -358,12 +358,12 @@ class DatabaseManager(MysqlConnection):
 			print("złapałem chuja!")				
 		
 	
-	def remove_teacher_event(self, eventId):
+	def delete_teacher_event(self, eventId):
 
 		query = """
-			DELETE * FROM Wydarzenia
+			DELETE FROM Wydarzenia
 			WHERE id = {}
-		""".format(lesson, eventId)
+		""".format(eventId)
 		
 		try:
 			self.execute(query)

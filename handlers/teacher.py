@@ -88,19 +88,11 @@ class EventHandler(MainHandler):
         self.redirect("/teacher/{}/events/".format(self.session["user"]))
     
     def __del_event(self, eventId):
-        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None,})
         self.__assert_attributes(attrs)
         if eventId == int(attrs["eventid"]): raise HTTPError(403, "Different eventId security check failed!")
         
-        self.db.delete_teacher_event(
-                self.session["userId"],
-                attrs["eventid"],
-                attrs["data"],
-                attrs["lekcja"],
-                attrs["przedmiot"],
-                attrs["klasa"],
-                attrs["tresc"]
-            )
+        self.db.delete_teacher_event(attrs["eventid"])
         self.flash_message("Usunięto wydarzenie", "Pomyślnie usunięto wydarzenie nr.{}!".format(eventId))
         self.redirect("/teacher/{}/events/".format(self.session["user"]))
     
