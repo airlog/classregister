@@ -54,6 +54,55 @@ class EventHandler(MainHandler):
     def __assert_attributes(self, attrs):
         for key, value in attrs.items():
             if value is None or value == "": raise HTTPError(405, "Illegal value of '{}': '{}'".format(key, value))
+
+    def __new_event(self):
+        attrs = self.__fill_attributes({"_xsrf": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        self.__assert_attributes(attrs)
+    
+        self.db.add_teacher_event(
+                self.session["userId"],
+                attrs["data"],
+                attrs["lekcja"],
+                attrs["przedmiot"],
+                attrs["klasa"],
+                attrs["tresc"]
+            )
+        self.flash_message("Dodano wydarzenie", "Pomyślnie dodano wydarzenie!")
+        self.redirect("/teacher/{}/events/".format(self.session["user"]))
+    
+    def __edit_event(self, eventId):
+        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        self.__assert_attributes(attrs)
+        if eventId == int(attrs["eventid"]): raise HTTPError(403, "Different eventId security check failed!")
+        
+        self.db.edit_teacher_event(
+                self.session["userId"],
+                attrs["eventid"],
+                attrs["data"],
+                attrs["lekcja"],
+                attrs["przedmiot"],
+                attrs["klasa"],
+                attrs["tresc"]
+            )
+        self.flash_message("Edytowano wydarzenie", "Pomyślnie edytowano wydarzenie nr.{}!".format(eventId))
+        self.redirect("/teacher/{}/events/".format(self.session["user"]))
+    
+    def __del_event(self, eventId):
+        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        self.__assert_attributes(attrs)
+        if eventId == int(attrs["eventid"]): raise HTTPError(403, "Different eventId security check failed!")
+        
+        self.db.delete_teacher_event(
+                self.session["userId"],
+                attrs["eventid"],
+                attrs["data"],
+                attrs["lekcja"],
+                attrs["przedmiot"],
+                attrs["klasa"],
+                attrs["tresc"]
+            )
+        self.flash_message("Usunięto wydarzenie", "Pomyślnie usunięto wydarzenie nr.{}!".format(eventId))
+        self.redirect("/teacher/{}/events/".format(self.session["user"]))
     
     @authenticated
     @require_teacher()
@@ -70,9 +119,9 @@ class EventHandler(MainHandler):
     def post(self, pesel, task, eventId):
         self._validate_pesel(pesel)
         
-        task = task.split("/")[0]
-        attrs = self.__fill_attributes({"_xsrf": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
-        self.__assert_attributes(attrs)
-        
-        self.write(json_encode(attrs) + "<br/>" + json_encode([pesel, task, eventId]))
+        task = task.split("/")[0]        
+        if task == "new": self.__new_event()
+        elif task == "edit": self.__edit_event(eventId)
+        elif task == "del": self.__del_event(eventId)
+        else: raise HTTPError(403)
 

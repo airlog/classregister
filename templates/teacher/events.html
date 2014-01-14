@@ -28,21 +28,25 @@
 	    </tr>
 	    {% for e in events %}
 		    <tr id="event{{ e["chuj"] }}">
-			    <td class="textright">{{ e["data"] }}</td>
-			    <td class="textright">{{ e["dzien"] }}</td>
-			    <td class="textright">{{ e["numerLekcji"] }}</td>
-			    <td class="textright"><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
-			    <td class="textright">{{ e["nazwa"] }}</td>
-			    <td class="textright">{{ e["tresc"] }}</td>
-			    <td><button style="width:100%;" >x</button></td>
-			    <td><button onclick="changeVisibility('editfield{{ e["chuj"] }}')">edit</button></td>
+			    <form action="del/{{ e["chuj"] }}" method="POST">
+		            {% module xsrf_form_html() %}
+			        <input type="hidden" name="eventid" value="{{ e["chuj"] }}"/>
+			        <td class="textright">{{ e["data"] }}</td>
+			        <td class="textright">{{ e["dzien"] }}</td>
+			        <td class="textright">{{ e["numerLekcji"] }}</td>
+			        <td class="textright"><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
+			        <td class="textright">{{ e["nazwa"] }}</td>
+			        <td class="textright">{{ e["tresc"] }}</td>
+			        <td><input style="width:100%;" type="submit" value="X"/></td>
+			    </form>
+		        <td><button onclick="changeVisibility('editfield{{ e["chuj"] }}')">edit</button></td>
 		    </tr>
 		    
 		    <!-- ukryty wiersz, który będzie służył do edycji -->
 	        <tr id="editfield{{ e["chuj"] }}" class="hidable">
 	            <form action="edit/{{ e["chuj"] }}" method="POST">
 		            {% module xsrf_form_html() %}
-		            <input name="eventid" type="hidden"/>
+		            <input type="hidden" name="eventid" value="{{ e["chuj"] }}"/>
 			        <td colspan="2">
 			            <input name="data" class="textright" size="10" type="date"  value="{{ e["data"] }}" title="poprawna data"/>
 			        </td>	

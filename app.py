@@ -40,7 +40,7 @@ class ClassRegisterApplication(Application):
         
             (r'/teacher/(\d{1,11})/', teacher.MainHandler),
             (r'/teacher/(\d{1,11})/schedule/', teacher.ScheduleHandler),
-            (r'/teacher/(\d{1,11})/events/(.{0}|new|edit/(\d+))', teacher.EventHandler),
+            (r'/teacher/(\d{1,11})/events/(.{0}|new|del/(\d+)|edit/(\d+))', teacher.EventHandler),
         ]
         
         Application.__init__(self, handlers,
