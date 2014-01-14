@@ -246,19 +246,30 @@ class DatabaseManager(MysqlConnection):
 			return result
 		return []
 	
-	def get_teacher_pupils(self, teacherId, courseId = None):
+	def get_teacher_groups(self,teacherId):
 		query = """
-			SELECT Klasy.nazwa, Przedmioty.nazwa, Przedmioty.id, Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
+			SELECT Klasy.nazwa AS k_nazwa, Klasy.id AS k_id, Przedmioty.nazwa AS p_nazwa, Przedmioty.id As p_id, 
+			FROM Przedmioty
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE Przedmioty.nauczycielId = {}
+			ORDER BY Klasy.nazwa
+		""".format(teacherId)
+		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
+	
+	def get_teacher_pupils_in_group(self, courseId):
+		query = """
+			SELECT Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
 			FROM Przedmioty
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
 			INNER JOIN Uczniowie ON Klasy.id = Uczniowie.klasaId
-			WHERE Przedmioty.nauczycielId = {}
-		""".format(teacherId)
-		
-		if courseId is not None:
-			query += "\nAND Przedmioty.przedmiotId = {}".format(courseId) 			
-		query += "\nORDER BY Klasy.nazwa, Uczniowie.nazwisko, Uczniowie.imie"
-		
+			WHERE Przedmioty.przedmiotId = {}"
+			ORDER BY Uczniowie.nazwisko, Uczniowie.imie
+		""".format(courseId)
+			
 		result = self.query(query)
 		if result is not None:
 			return result
@@ -266,7 +277,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_teacher_pupil_grades(self, pupilId, courseId):
 		query = """
-			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Przedmioty.id, Przedmioty.nazwa, Oceny.data, Oceny.ocena, Oceny.opis
+			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Oceny.data, Oceny.ocena, Oceny.opis
 			FROM Oceny
 			INNER JOIN Uczniowie ON Oceny.uczenId = Uczniowie.id
 			INNER JOIN Przedmioty ON Oceny.przedmiotId = Przedmioty.id

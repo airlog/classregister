@@ -1,0 +1,24 @@
+{% extends main.html %}
+
+{% block title %}eDziennik - plan lekcji{% end %}
+
+{% block content %}
+<div class="marginize">
+    <h2>imie nazwisko - klasa - przedmiot</h2>
+	<table>
+		<tr>
+			<th>data</th>
+			<th>ocena</th>
+			<th>opis</th>
+		</tr>
+		{% for g in grades %}
+			<tr>
+				<td>{{ g["data"]}}</td></td>
+				<td>{{ g["ocena"]}}</td></td>
+				<td>{{ g["opis"]}}</td></td>
+			</tr>
+		{% end %}
+    </table>
+</div>
+{% end %}
+
