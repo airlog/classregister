@@ -106,7 +106,7 @@ class EventHandler(MainHandler):
     
     @authenticated
     @require_teacher()
-    def get(self, pesel, task, eventId):
+    def get(self, pesel, task = None, eventId = None):
         self._validate_pesel(pesel)
         print("task = {}".format(task))
         if task is not None and task != "": raise HTTPError(403)
@@ -116,7 +116,7 @@ class EventHandler(MainHandler):
 
     @authenticated
     @require_teacher()
-    def post(self, pesel, task, eventId):
+    def post(self, pesel, task, eventId = None):
         self._validate_pesel(pesel)
         
         task = task.split("/")[0]        
