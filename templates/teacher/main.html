@@ -4,10 +4,12 @@
 
 {% block menu %}
 	<h1>e-Dziennik</h1>
+	<div><b>Zalogowany jako</b> <i>WSTAW_IMIE_POTRZEBNE_ZAPYTANIE</i></div>
 	<span class="menu_link"><a href="/teacher/{{ current_user["user"] }}/schedule/">PLAN LEKCJI</a></span>
 	<span class="menu_link"><a href="/teacher/{{ current_user["user"] }}/events/">WYDARZENIA</a></span>
 	<span class="menu_link"><a href="/teacher/{{ current_user["user"] }}/groups/">KLASY</a></span>
-	<a class="right" href="/auth/signout"> WYLOGUJ</a>
+	<a class="right" href="/auth/signout">WYLOGUJ</a>
+	<br/>
 {% end %}
 
 {% block content %}

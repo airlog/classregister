@@ -16,3 +16,52 @@ function hide(className) {
 	for (i = 0; i < elements.length; i++) changeVisibility(elements[i].id);
 }
 
+function presanceFormSubmit() {    
+    var form = document.getElementById("fnieobecnosc");
+    var input = document.getElementById("absentInput");
+    var pattern = /\w+(\d+)/;
+    
+    /* wyczyść poprzedni stan */
+    input.value = "";
+    
+    /* CSV, jeden wiersz, w każdej kolumnie ID nieobecnego ucznia */
+    var checkboxes = document.getElementsByClassName("presancestate");
+    
+    var absent = 0;
+    for (var i = 0; i < checkboxes.length; i++) {
+        var cb = checkboxes.item(i);
+        if (!cb.checked) continue;
+        
+        var id = cb.name.match(pattern)[1];
+        input.value += id + ",";
+        absent++;
+    }
+     
+    if (absent > 0) form.submit();
+}
+
+function degreeFormSubmit() {    
+    var form = document.getElementById("focena");
+    var opis = document.getElementById("opisoceny");
+    var input = document.getElementById("degreeInput");
+    var pattern = /\w+(\d+)/;
+    
+    /* wyczyść poprzedni stan */
+    input.value = "";
+    
+    /* CSV, wiele wierszy, dwie kolumny: uczenId,ocena */
+    var selects = document.getElementsByClassName("degreestate");
+    
+    var degrees = 0;
+    for (var i = 0; i < selects.length; i++) {
+        var sl = selects.item(i);
+        if (sl.value == "") continue;
+        
+        var id = sl.name.match(pattern)[1];
+        input.value += id + "," + sl.value + "\n";
+        degrees++;
+    }
+    
+    if (degrees > 0 && opis.value.length > 3) form.submit();
+}
+

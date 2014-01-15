@@ -4,6 +4,16 @@
 
 {% block content %}
 <div class="marginize">
+    <form action="/test/post" method="POST" id="fnieobecnosc">
+        {% module xsrf_form_html() %}
+        <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
+        <input id="absentInput" type="hidden" name="absentStudents" value=""/>
+    </form>
+    <form action="/test/post" method="POST" id="focena">
+        {% module xsrf_form_html() %}
+        <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
+        <input id="degreeInput" type="hidden" name="degreeData" required="true" value=""/>
+    </form>
     <h2>Wydarzenia</h2>
 	<table>
 	    <tr>
@@ -16,7 +26,7 @@
 	    </tr>
 	    <tr>
 	        <td colspan="4"></td>
-	        <td class="textcenter"><input type="text" name="opisoceny" title="krótki opis oceny" maxlength="16" class="textright"/></td>
+	        <td class="textcenter"><input id="opisoceny" form="focena" type="text" name="opisoceny" title="krótki opis oceny" minlength="3" maxlength="16" required="true" class="textright"/></td>
 	    </tr>
 	    
 	    {% set i = 1 %}
@@ -25,9 +35,9 @@
 	            <td class="textcenter">{{ i }}</td>
 	            <td class="textcenter">{{ p["nazwisko"] }}</td>
 	            <td class="textcenter">{{ p["imie"] }}</td>
-	            <td class="textcenter"><input type="checkbox" name="nieobecnosc0"/></td>
+	            <td class="textcenter"><input class="presancestate" type="checkbox" name="nieobecnoscUczen{{ p["id"] }}"/></td>
 	            <td class="textcenter">
-	                <select class="textright" style="width: 40%;">
+	                <select class="textright degreestate" style="width: 40%;" name="ocenaUczen{{ p["id"] }}">
 	                    <option></option>
 	                    <option>1</option>
                         <option>2</option>
@@ -44,8 +54,8 @@
 	    
 	    <tr>
 	        <td colspan="3"></td>
-	        <td class="textcenter"><input type="submit" value="Wstaw nieobecność"/></td>
-	        <td class="textcenter"><input type="submit" value="Wstaw oceny"/></td>
+	        <td class="textcenter"><input form="fnieobecnosc" type="button" value="Wstaw nieobecność" onclick="presanceFormSubmit()"/></td>
+	        <td class="textcenter"><input form="focena" type="button" value="Wstaw oceny" onclick="degreeFormSubmit()"/></td>
 	    </tr>
     </table>
 </div>
