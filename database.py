@@ -275,20 +275,21 @@ class DatabaseManager(MysqlConnection):
 			return result[0]
 		return []
 	
-	def get_pupil_absence(self, pupilId, courseId):
+	def __get_lesson_id(self,courseId,day,lesson):
 		query = """
-			SELECT Nieobecnosci.data, Nieobecnosci.id, Lekcje.numerLekcji, Nieobecnosci.usprawiedliwienie
-			FROM Nieobecnosci
-			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
-			WHERE Nieobecnosci.uczenId = {} AND Lekcje.przedmiotId = {}
-			ORDER BY Nieobecnosci.data DESC, Lekcje.numerLekcji
-		""".format(pupilId, courseId)	
-				
+			SELECT Lekcje.id FROM Lekcje
+			WHERE Lekcje.dzien = {}
+			AND Lekcje.numerLekcji = {}
+			AND Lekcje.przedmiotId = {}
+		""".format(day,lesson, courseId)
+		
 		result = self.query(query)
-		if result is not None:
-			return result
-		return []
+		if result is not None and len(result)>0:
+			return result[0]["id"]
+		return None
 	
+	
+		
 	def get_pupils_in_class(self, courseId):
 		query = """
 			SELECT Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
@@ -298,27 +299,11 @@ class DatabaseManager(MysqlConnection):
 			WHERE Przedmioty.id = {}
 			ORDER BY Uczniowie.nazwisko, Uczniowie.imie
 		""".format(courseId)
-			
 		result = self.query(query)
 		if result is not None:
 			return result
 		return []
-	
-	def get_teacher_pupil_grades(self, courseId, pupilId):
-		query = """
-			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Oceny.data, Oceny.ocena, Oceny.opis
-			FROM Oceny
-			INNER JOIN Uczniowie ON Oceny.uczenId = Uczniowie.id
-			INNER JOIN Przedmioty ON Oceny.przedmiotId = Przedmioty.id
-			WHERE przedmiotId = {} AND uczenId = {}
-			ORDER BY data DESC
-		""".format(courseId, pupilId)
 		
-		result = self.query(query)
-		if result is not None:
-			return result
-		return []
-	
 	def get_teacher_events(self, teacherId, courseId = None):
 		query = """
 			SELECT Wydarzenia.id AS chuj, Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa AS przedmiot, Przedmioty.id, Klasy.nazwa, Wydarzenia.tresc
@@ -399,7 +384,6 @@ class DatabaseManager(MysqlConnection):
 		
 	
 	def delete_teacher_event(self, eventId):
-
 		query = """
 			DELETE FROM Wydarzenia
 			WHERE id = {}
@@ -408,5 +392,111 @@ class DatabaseManager(MysqlConnection):
 		try:
 			self.execute(query)
 		except MysqlError as e:
-			print("złapałem chuja!")
-			 
+			print("Nie udało się wykonać operacji na bazie!")	
+
+	#zwiazanie z ocenami	
+	
+	def get_teacher_pupil_grades(self, courseId, pupilId):
+		query = """
+			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Oceny.id,  Oceny.data, Oceny.ocena, Oceny.opis
+			FROM Oceny
+			INNER JOIN Uczniowie ON Oceny.uczenId = Uczniowie.id
+			INNER JOIN Przedmioty ON Oceny.przedmiotId = Przedmioty.id
+			WHERE przedmiotId = {} AND uczenId = {}
+			ORDER BY data DESC
+		""".format(courseId, pupilId)
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
+		
+	def delete_pupil_grade(self, gradeId):
+		query = """
+			DELETE FROM Oceny
+			WHERE id = {}
+		""".format(gradeId)
+		
+		try:
+			self.execute(query)
+		except MysqlError as e:
+			print("Nie udało się wykonać operacji na bazie!")	
+
+	def edit_pupil_grade(self, gradeId, date, grade, description):
+		query = """
+			UPDATE Oceny
+			SET data = "{}",
+			ocena = {},
+			opis = "{}"
+			WHERE id = {}
+		""" .format(date,grade,description.encode("cp1250"),gradeId)
+		try:
+			self.execute(query)
+		except MysqlError as e:
+			print("Nie udało się wykonać operacji na bazie!")	
+	
+	def add_pupil_grade(self, description, grade, courseId, date):
+		for g in grade:
+			query = """
+				INSERT INTO Oceny
+				VALUES (NULL,{},{},{},"{}","{}",0)
+			""".format(g[0],courseId,g[1],date,description.encode("cp1250"))
+			try:
+				self.execute(query)
+			except MysqlError as e:
+				print("Nie udało się wykonać operacji na bazie!")
+
+	#zwiazanie z nieobecnosciami	
+		
+	def delete_pupil_absense(self, absenceId):
+		query = """
+			DELETE FROM Nieobecnosci
+			WHERE id = {} 
+		""".format(absenceId)
+		try:
+			self.execute(query)
+		except MysqlError as e:
+			print("Nie udało się wykonać operacji na bazie!")				
+
+	def add_pupil_absence(self, pupilId, courseId, date, day, lesson):
+		lessonId = self.__get_lesson_id(courseId,day,lesson)
+		if lessonId is None:
+			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
+		for p in pupilId:
+			query = """
+				INSERT INTO Nieobecnosci
+				VALUES (NULL,{},"{}",{},0)
+			""".format(p,date,lessonId)
+			try:
+				self.execute(query)
+			except MysqlError as e:
+				print("Nie udało się wykonać operacji na bazie!")
+	
+	def edit_pupil_absence(self, courseId, absenceId, date, day, lesson, excuse):
+		lessonId = self.__get_lesson_id(courseId,day,lesson)
+		if lessonId == None:
+			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")		 
+		query = """
+			UPDATE Nieobecnosci
+			SET data = "{}",
+			lekcjaId = {},
+			usprawiedliwienie = {}			
+			WHERE id = {} 
+		""".format(date,lessonId,excuse,absenceId)
+		try:
+			self.execute(query)
+		except MysqlError as e:
+			print("Nie udało się wykonać operacji na bazie!")	
+	
+	def get_pupil_absence(self, pupilId, courseId):
+		query = """
+			SELECT Nieobecnosci.data, Nieobecnosci.id, Lekcje.numerLekcji, Nieobecnosci.usprawiedliwienie
+			FROM Nieobecnosci
+			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
+			WHERE Nieobecnosci.uczenId = {} AND Lekcje.przedmiotId = {}
+			ORDER BY Nieobecnosci.data DESC, Lekcje.numerLekcji
+		""".format(pupilId, courseId)		
+		result = self.query(query)
+		if result is not None:
+			return result
+		return []
+
