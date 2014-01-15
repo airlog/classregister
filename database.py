@@ -103,6 +103,7 @@ class DatabaseManager(MysqlConnection):
 		uczenId INT,
 		data DATE,
 		lekcjaId INT,
+		usprawiedliwienie BOOLEAN,
 		
 		PRIMARY KEY (id),
 		FOREIGN KEY (uczenId) REFERENCES Uczniowie(id),
@@ -272,6 +273,20 @@ class DatabaseManager(MysqlConnection):
 		result = self.query(query)
 		if result is not None:
 			return result[0]
+		return []
+	
+	def get_pupil_absence(self, pupilId, courseId):
+		query = """
+			SELECT Nieobecnosci.data, Nieobecnosci.id, Lekcje.numerLekcji, Nieobecnosci.usprawiedliwienie
+			FROM Nieobecnosci
+			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
+			WHERE Nieobecnosci.uczenId = {} AND Lekcje.przedmiotId = {}
+			ORDER BY Nieobecnosci.data DESC, Lekcje.numerLekcji
+		""".format(pupilId, courseId)	
+				
+		result = self.query(query)
+		if result is not None:
+			return result
 		return []
 	
 	def get_pupils_in_class(self, courseId):
