@@ -130,8 +130,9 @@ class GroupHandler(MainHandler):
     def __get_pupil(self, pesel, courseId, pupilId):
         cid, pid = int(courseId), int(pupilId)
         grades = self.db.get_teacher_pupil_grades(cid, pid)
+        absence = self.db.get_pupil_absence(pid, cid)
         pupilData = self.db.get_pupil_data(pid, cid)
-        self.render("teacher/pupil.html", grades = grades, pupilData = pupilData)
+        self.render("teacher/pupil.html", grades = grades, absence = absence, pupilData = pupilData)
 
     @authenticated
     @require_teacher()

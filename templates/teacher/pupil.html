@@ -5,6 +5,8 @@
 {% block content %}
 <div class="marginize">
     <h2>{{ pupilData["imie"] }} {{ pupilData["nazwisko"] }} - {{ pupilData["klasa"] }} - {{ pupilData["przedmiot"] }}</h2>
+	<div style="float:left;margin-right:50px;">
+	<h3>Oceny</h3>
 	<table>
 		<tr>
 			<th>data</th>
@@ -13,12 +15,34 @@
 		</tr>
 		{% for g in grades %}
 			<tr>
-				<td>{{ g["data"]}}</td></td>
-				<td>{{ g["ocena"]}}</td></td>
-				<td>{{ g["opis"]}}</td></td>
+				<td>{{ g["data"]}}</td>
+				<td>{{ g["ocena"]}}</td>
+				<td>{{ g["opis"]}}</td>
 			</tr>
 		{% end %}
     </table>
+    </div>
+	<div style="float:left;">
+	<h3>Nieobecności</h3>
+	<table>
+		<tr>
+			<th>data</th>
+			<th>lekcja</th>
+			<th>usprawiedliwienie</th>
+		</tr>
+		{% for a in absence %}
+			<tr>
+				<td>{{ a["data"]}}</td>
+				<td>{{ a["numerLekcji"]}}</td>
+				{% if a["usprawiedliwienie"] == 0%}
+					<td>NIE</td>
+				{% else %}
+					<td>TAK</td>
+				{% end %}
+			</tr>
+		{% end %}
+    </table>
+    </div>
 </div>
 {% end %}
 
