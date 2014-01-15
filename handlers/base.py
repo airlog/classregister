@@ -20,9 +20,10 @@ class BaseHandler(RequestHandler):
     def render(self, *args, **kwargs):
         # każde wywołanie render przekazuje dodatkowo następujące obiekty
         mykwargs = {
-                    "get_flash": self.get_flash,
-                    "is_flash": self.is_flash,
-                }
+                "get_flash": self.get_flash,
+                "is_flash": self.is_flash,
+                "session": self.session,
+            }
                 
         # wywołaj render od ojca
         RequestHandler.render(self, *args, **dict(kwargs.items() + mykwargs.items()))
