@@ -50,7 +50,7 @@ class ClassRegisterApplication(Application):
             (r'/teacher/(\d{1,11})/groups/(\d+)/', teacher.GroupHandler),
             (r'/teacher/(\d{1,11})/groups/(\d+)/(\d+)/', teacher.GroupHandler),            
             (r'/teacher/(\d{1,11})/groups/(\d+)/(presances)/(set)', teacher.GroupPostHandler),
-            (r'/teacher/(\d{1,11})/groups/(\d+)/(degrees)/(set)', teacher.GroupPostHandler),
+            (r'/teacher/(\d{1,11})/groups/(\d+)/(degrees)/(set|edit|del)', teacher.GroupPostHandler),
         ]
         
         Application.__init__(self, handlers,
