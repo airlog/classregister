@@ -137,7 +137,8 @@ class GroupHandler(MainHandler):
         grades = self.db.get_teacher_pupil_grades(cid, pid)
         absence = self.db.get_pupil_absence(pid, cid)
         pupilData = self.db.get_pupil_data(pid, cid)
-        self.render("teacher/pupil.html", grades = grades, absence = absence, pupilData = pupilData)
+        lessons = self.db.get_teacher_schedule(self.session["userId"],courseId)
+        self.render("teacher/pupil.html", grades = grades, absence = absence, lessons = lessons, pupilData = pupilData)
 
     @authenticated
     @require_teacher()
