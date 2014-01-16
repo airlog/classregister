@@ -169,6 +169,23 @@ class DatabaseManager(MysqlConnection):
 			return result[0]
 		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
 		
+	def get_user_name(self, pesel, type):
+		if type == "UCZEN":
+			query = """SELECT imie, nazwisko FROM Uczniowie
+			WHERE pesel = "{}"
+			""".format(pesel)
+		elif type == "NAUCZYCIEL":
+			query = """SELECT imie, nazwisko FROM Nauczyciele
+			WHERE pesel = "{}"
+			""".format(pesel)
+		else:
+			raise ValueError("Typ {} nie istnieje".format(type))		
+		
+		result = self.query(query)
+		if result is not None and len(result)>0:
+			return result[0]
+		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
+		
 	### dla ucznia:
 	
 	def get_user_schedule(self, userId):
