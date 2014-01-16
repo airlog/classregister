@@ -100,7 +100,7 @@ class EventHandler(MainHandler):
     def get(self, pesel, task = None, eventId = None):
         self._validate_pesel(pesel)
         if task is not None and task != "": raise HTTPError(403)
-        
+                
         events = self.db.get_teacher_events(self.session["userId"])
         lessons = self.db.get_teacher_schedule(self.session["userId"])      
         self.render("teacher/events.html", events = events, lessons = lessons)
@@ -141,6 +141,8 @@ class GroupHandler(MainHandler):
     @require_teacher()
     def get(self, pesel, courseId = None, pupilId = None):
         self._validate_pesel(pesel)
+          
+        self.save_url()
           
         if pupilId is not None: self.__get_pupil(pesel, courseId, pupilId)
         elif courseId is not None: self.__get_groupview(pesel, courseId);
@@ -216,5 +218,8 @@ class GroupPostHandler(MainHandler):
         if task == "presances": self.__handle_presances_task(courseId, action)
         elif task == "degrees": self.__handle_degrees_task(courseId, action)
         else: raise HTTPError(405)
-        self.redirect("/teacher/{}/".format(self.session["user"]))
+        
+        url = self.get_url()
+        if url is None: url = "/teacher/{}/".format(self.session["user"])
+        self.redirect(url)
 

@@ -7,7 +7,8 @@ from tornado.escape import json_encode, json_decode
 class BaseHandler(RequestHandler):
     
     SESSION_COOKIE  = "session"
-    FLASH_COOKIE   = "flash"
+    FLASH_COOKIE    = "flash"
+    URL_COOKIE      = "lasturl"
     
     @property
     def db(self):
@@ -16,7 +17,7 @@ class BaseHandler(RequestHandler):
     @property
     def session(self):
         return self.get_session()
-        
+            
     def render(self, *args, **kwargs):
         # każde wywołanie render przekazuje dodatkowo następujące obiekty
         mykwargs = {
@@ -61,7 +62,15 @@ class BaseHandler(RequestHandler):
         if flash is None: return []
         self.clear_cookie(BaseHandler.FLASH_COOKIE)
         return json_decode(flash)
-        
+    
+    def save_url(self):
+        self.set_cookie(BaseHandler.URL_COOKIE, json_encode(self.request.uri))
+    
+    def get_url(self):
+        url = json_decode(self.get_cookie(BaseHandler.URL_COOKIE))
+        self.clear_cookie(BaseHandler.URL_COOKIE)
+        return url
+    
     @authenticated
     def get(self):
         urls = {
