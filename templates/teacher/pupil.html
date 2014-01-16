@@ -91,7 +91,7 @@
 		    </tr>
 		    {% for a in absence %}
 			    <tr id="absence{{ a["id"] }}">
-			        <form action="del/{{ a["id"] }}" method="POST">
+			        <form action="../presances/del" method="POST">
 		                {% module xsrf_form_html() %}
 			            <input type="hidden" name="absenceid" value="{{ a["id"] }}"/>
 					    <td>{{ a["data"]}}</td>
@@ -106,9 +106,9 @@
 				    </form>
 			    <td><button onclick="changeVisibility('editfield_a{{ a["id"] }}')">edit</button></td>
 			    </tr>
-			     <!-- ukryty wiersz, który będzie służył do edycji -->
+			    <!-- ukryty wiersz, który będzie służył do edycji -->
 	            <tr id="editfield_a{{ a["id"] }}" class="hidable">
-	                <form action="edit/{{ a["id"] }}" method="POST">
+	                <form action="../presances/edit" method="POST">
 		                {% module xsrf_form_html() %}
 		                <input type="hidden" name="absenceid" value="{{ a["id"] }}"/>
 			            <td>
@@ -142,10 +142,12 @@
 	            </tr>
 		    {% end %}
 		        <tr id="new_data_a" class="hidable">		    
-		        <form action="new" method="POST">
+		        <form action="../presances/set" method="POST">
 		            {% module xsrf_form_html() %}
+		            <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
+                    <input id="absentInput" type="hidden" name="absentStudents" value="{{ pupilData["id"] }},"/>
 			            <td>
-			                <input name="data" class="textright" size="10" type="date" }}" title="poprawna data"/>
+			                <input name="absentDate" class="textright" size="10" type="date" title="poprawna data"/>
 			            </td>	
 					    <td colspan="2" class="textcenter">
 						    <select name="lekcja">
@@ -154,12 +156,7 @@
 							    {% end %}
 						    </select>
 	                    </td>
-	                    <td>
-						    <select name="usprawiedliwienie">
-							    <option value="0">NIE</option>
-							    <option value="1">TAK</option>
-						    </select>
-					    </td>	
+	                    <td>NIE</td>	
 			        <td colspan="2" style="text-align: center;">
 			            <input type="submit" value="Dodaj"/>
 			        </td>

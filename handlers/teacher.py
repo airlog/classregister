@@ -155,14 +155,23 @@ class GroupPostHandler(MainHandler):
         
         # wiemy z założenia, że będzie jeden wiersz
         pupilIds = sorted([int(s) for s in csv_parse(attrs["absentStudents"])[0] if len(s) > 0])
-        cid, date, lessonId = int(courseId), attrs["absentDate"], attrs["lekcja"]
-        self.db.add_pupil_absence(pupilIds, cid, date, lessonId)
+#        print("id = {}".format(pupilIds))
+        date, lessonId = attrs["absentDate"], int(attrs["lekcja"])
+        self.db.add_pupil_absence(pupilIds, date, lessonId)
     
     def __presances_edit(self, courseId):
-        pass
+        attrs = self._fill_attributes({"_xsrf": None, "absenceid": None, "data": None, "lekcja": None, "usprawiedliwienie": None,})
+        self._assert_attributes(attrs)
+        
+        aid, date, lid, excused = int(attrs["absenceid"]), attrs["data"], int(attrs["lekcja"]), attrs["usprawiedliwienie"]
+        self.db.edit_pupil_absence(aid, lid, date, excused)
         
     def __presances_del(self, courseId):
-        pass
+        attrs = self._fill_attributes({"_xsrf": None, "absenceid": None,})
+        self._assert_attributes(attrs)
+        
+        aid = int(attrs["absenceid"])
+        self.db.delete_pupil_absence(aid)
         
     def __degrees_set(self, courseId):
         attrs = self._fill_attributes({"_xsrf": None, "nauczycielid": None, "degreeDate": None, "degreeData": None, "opisoceny": None})

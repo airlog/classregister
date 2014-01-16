@@ -5,6 +5,14 @@ from MySQLdb import Error as MysqlError
 import externals
 from torndb import Connection as MysqlConnection
 
+class ArgsPrinter:
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        print("func = {}\nargs = {}\nkwargs = {}\n".format(self.func, args, kwargs))
+        return self.func(*args, **kwargs)
+
 class DatabaseManager(MysqlConnection):
     
 	CREATE_TABLE_UCZNIOWIE = """CREATE TABLE IF NOT EXISTS Uczniowie (
@@ -449,7 +457,7 @@ class DatabaseManager(MysqlConnection):
 
 	#zwiazanie z nieobecnosciami	
 		
-	def delete_pupil_absense(self, absenceId):
+	def delete_pupil_absence(self, absenceId):
 		query = """
 			DELETE FROM Nieobecnosci
 			WHERE id = {} 
@@ -459,10 +467,7 @@ class DatabaseManager(MysqlConnection):
 		except MysqlError as e:
 			print("Nie udało się wykonać operacji na bazie!")				
 
-	def add_pupil_absence(self, pupilId, courseId, date, lessonId):
-#		lessonId = self.__get_lesson_id(courseId,day,lesson)
-#		if lessonId is None:
-#			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
+	def add_pupil_absence(self, pupilId, date, lessonId):
 		for p in pupilId:
 			query = """
 				INSERT INTO Nieobecnosci
@@ -473,10 +478,7 @@ class DatabaseManager(MysqlConnection):
 			except MysqlError as e:
 				print("Nie udało się wykonać operacji na bazie!")
 	
-	def edit_pupil_absence(self, courseId, absenceId, date, lessonId, excuse):
-#		lessonId = self.__get_lesson_id(courseId,day,lesson)
-#		if lessonId == None:
-#			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")		 
+	def edit_pupil_absence(self, absenceId, lessonId, date, excuse):	 
 		query = """
 			UPDATE Nieobecnosci
 			SET data = "{}",
