@@ -1,6 +1,6 @@
 {% extends main.html %}
 
-{% block title %}eDziennik - plan lekcji{% end %}
+{% block title %}eDziennik - uczeń - szczegóły{% end %}
 
 {% block content %}
 <div class="marginize">
@@ -12,35 +12,163 @@
 			<th>data</th>
 			<th>ocena</th>
 			<th>opis</th>
+			<th></th>
+		    <th></th>
 		</tr>
 		{% for g in grades %}
-			<tr>
-				<td>{{ g["data"]}}</td>
-				<td>{{ g["ocena"]}}</td>
-				<td>{{ g["opis"]}}</td>
+			<tr id="grade{{ g["id"] }}">
+			    <form action="del/{{ g["id"] }}" method="POST">
+		            {% module xsrf_form_html() %}
+			        <input type="hidden" name="gradeid" value="{{ g["id"] }}"/>
+			        <td>{{ g["data"]}}</td>
+					<td>{{ g["ocena"]}}</td>
+					<td>{{ g["opis"]}}</td>
+					<td><input style="width:100%;" type="submit" value="X"/></td>
+				</form>
+				<td><button onclick="changeVisibility('editfield_g{{ g["id"] }}')">edit</button></td>
 			</tr>
+			 <!-- ukryty wiersz, który będzie służył do edycji -->
+	        <tr id="editfield_g{{ g["id"] }}" class="hidable">
+	            <form action="edit/{{ g["id"] }}" method="POST">
+		            {% module xsrf_form_html() %}
+		            <input type="hidden" name="gradeid" value="{{ g["id"] }}"/>
+			        <td>
+			            <input name="data" class="textright" size="10" type="date"  value="{{ g["data"] }}" title="poprawna data"/>
+			        </td>	
+					<td class="textcenter">
+						<select class="textright degreestate" name="ocenaUczen{{ pupilData["id"] }}">
+							<option></option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+	                </td>
+			        <td><input name="opis" class="textright" style="width:100%;" type="text" value="{{ g["opis"] }}" title="krótko opisz ocene"/></td>	
+			        <td><input type="submit" value="Ok"/></td>
+			        <td><input type="button" value="Anuluj" onclick="changeVisibility('editfield_g{{ g["id"] }}')"/></td>	
+		        </form>
+	        </tr>
 		{% end %}
-    </table>
+    	 <tr id="new_data" class="hidable">		    
+		    <form action="new" method="POST">
+		        {% module xsrf_form_html() %}
+		        <td>
+			        <input name="data" class="textright" size="10" type="date" title="poprawna data"/>
+			    </td>	
+				<td class="textcenter">
+					<select class="textright degreestate" name="ocenaUczen{{ pupilData["id"] }}">
+						<option></option>
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+						<option>5</option>
+						<option>6</option>
+	            </td>
+			    <td><input name="opis" class="textright" style="width:100%;" type="text" }}" title="krótko opisz ocenę"/></td>	
+			    <td colspan="2" style="text-align: center;">
+			        <input type="submit" value="Dodaj"/>
+			    </td>
+		     </form>
+	    </tr>
+	    <tr><td colspan="8" style="text-align:center;"><button onclick="changeVisibility('new_data')">Dodaj nowy</button></td></tr>
+
+</table>
     </div>
+    
+    <!-- Nieobecnosci -->
+    
 	<div style="float:left;">
 	<h3>Nieobecności</h3>
 	<table>
 		<tr>
 			<th>data</th>
+			<th>dzień</th>
 			<th>lekcja</th>
 			<th>usprawiedliwienie</th>
+			<th></th>
+		    <th></th>
+
 		</tr>
 		{% for a in absence %}
-			<tr>
-				<td>{{ a["data"]}}</td>
-				<td>{{ a["numerLekcji"]}}</td>
-				{% if a["usprawiedliwienie"] == 0%}
-					<td>NIE</td>
-				{% else %}
-					<td>TAK</td>
-				{% end %}
+			<tr id="absence{{ a["id"] }}">
+			    <form action="del/{{ a["id"] }}" method="POST">
+		            {% module xsrf_form_html() %}
+			        <input type="hidden" name="absenceid" value="{{ a["id"] }}"/>
+					<td>{{ a["data"]}}</td>
+					<td>{{ a["dzien"]}}</td>
+					<td>{{ a["numerLekcji"]}}</td>
+					{% if a["usprawiedliwienie"] == 0%}
+						<td>NIE</td>
+					{% else %}
+						<td>TAK</td>
+					{% end %}
+				<td><input style="width:100%;" type="submit" value="X"/></td>
+				</form>
+			<td><button onclick="changeVisibility('editfield_a{{ a["id"] }}')">edit</button></td>
 			</tr>
+			 <!-- ukryty wiersz, który będzie służył do edycji -->
+	        <tr id="editfield_a{{ a["id"] }}" class="hidable">
+	            <form action="edit/{{ a["id"] }}" method="POST">
+		            {% module xsrf_form_html() %}
+		            <input type="hidden" name="absenceid" value="{{ a["id"] }}"/>
+			        <td>
+			            <input name="data" class="textright" size="10" type="date"  value="{{ a["data"] }}" title="poprawna data"/>
+			        </td>	
+					<td colspan="2" class="textcenter">
+						<select name="lekcja">
+							{% for l in lessons %}
+								{% if l["lekcjaId"] == a["lekcjaId"] %}
+									<option value="{{l["lekcjaId"]}}" selected>dzien: {{ l["dzien"]}}, lekcja: {{ l["numerLekcji"]}}</option>
+								{% else %}
+									<option value="{{l["lekcjaId"]}}">dzien: {{ l["dzien"]}}, lekcja: {{ l["numerLekcji"]}}</option>
+								{% end %}
+							{% end %}
+						</select>
+	                </td>
+			        <td>
+						<select name="usprawiedliwienie">
+							{% if a["usprawiedliwienie"] == 0%}
+								<option value="0" selected>NIE</option>
+								<option value="1">TAK</option>
+							{% else %}
+								<option value="0">NIE</option>
+								<option value="1" selected>TAK</option>
+							{% end %}		
+						</select>
+					</td>	
+			        <td><input type="submit" value="Ok"/></td>
+			        <td><input type="button" value="Anuluj" onclick="changeVisibility('editfield_a{{ a["id"] }}')"/></td>	
+		        </form>
+	        </tr>
 		{% end %}
+		    <tr id="new_data_a" class="hidable">		    
+		    <form action="new" method="POST">
+		        {% module xsrf_form_html() %}
+			        <td>
+			            <input name="data" class="textright" size="10" type="date" }}" title="poprawna data"/>
+			        </td>	
+					<td colspan="2" class="textcenter">
+						<select name="lekcja">
+							{% for l in lessons %}
+								<option value="{{l["lekcjaId"]}}">dzien: {{ l["dzien"]}}, lekcja: {{ l["numerLekcji"]}}</option>
+							{% end %}
+						</select>
+	                </td>
+	                <td>
+						<select name="usprawiedliwienie">
+							<option value="0">NIE</option>
+							<option value="1">TAK</option>
+						</select>
+					</td>	
+			    <td colspan="2" style="text-align: center;">
+			        <input type="submit" value="Dodaj"/>
+			    </td>
+		     </form>
+	    </tr>
+	    <tr><td colspan="8" style="text-align:center;"><button onclick="changeVisibility('new_data_a')">Dodaj nowy</button></td></tr>
     </table>
     </div>
 </div>
