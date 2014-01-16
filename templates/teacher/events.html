@@ -34,8 +34,8 @@
 			        <td class="textright">{{ e["data"] }}</td>
 			        <td class="textright">{{ e["dzien"] }}</td>
 			        <td class="textright">{{ e["numerLekcji"] }}</td>
-			        <td class="textright"><a href="/teacher/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["przedmiot"] }}</a></td>
-			        <td class="textright">{{ e["nazwa"] }}</td>
+			        <td class="textright">{{ e["przedmiot"] }}</td>
+			        <td class="textright"><a href="/teacher/{{ current_user["user"] }}/groups/{{ e["id"]}}/">{{ e["nazwa"] }}</a></td>
 			        <td class="textright">{{ e["tresc"] }}</td>
 			        <td><input style="width:100%;" type="submit" value="X"/></td>
 			    </form>

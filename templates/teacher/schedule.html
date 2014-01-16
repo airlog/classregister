@@ -18,7 +18,7 @@
 				<td>{{ s["dzien"] }}</td>
 				<td class="right">{{ s["numerLekcji"] }}</td>
 				<td>{{ s["przedmiot"]}}</td></td>
-				<td> <a href="/teacher/{{ current_user["user"] }}/groups/{{ s["id"] }}">{{ s["nazwa"] }}</a></td>
+				<td> <a href="/teacher/{{ current_user["user"] }}/groups/{{ s["id"] }}/">{{ s["nazwa"] }}</a></td>
 				<td>{{ s["sala"] }}</td>
 			</tr>
 		{% end %}

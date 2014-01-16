@@ -70,7 +70,7 @@
 	        <td colspan="2">
 	        	<select name="lekcja"  style="width:100%;">
 					{% for l in lessons %}
-						<option value="{{ l["lekcjaId"]}}">{{ l["dzien"] }} {{ l["numerLekcji"] }} {{ l["przedmiot"] }} {{l["nazwa"] }}</option>								
+						<option value="{{ l["lekcjaId"]}}">dzień:  {{ l["dzien"] }} &nbsp; &nbsp; &nbsp; lekcja: {{ l["numerLekcji"] }}</option>								
 					{% end %}	
 				</select>
 			</td>

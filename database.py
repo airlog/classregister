@@ -184,7 +184,7 @@ class DatabaseManager(MysqlConnection):
 		result = self.query(query)
 		if result is not None and len(result)>0:
 			return result[0]
-		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(login, type))
+		raise ValueError("Uzytkownik nie istnieje ({}, {})".format(pesel, type))
 		
 	### dla ucznia:
 	
