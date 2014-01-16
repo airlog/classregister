@@ -298,7 +298,7 @@ class DatabaseManager(MysqlConnection):
 		
 	def get_pupil_data(self, pupilId, courseId):
 		query = """
-			SELECT Uczniowie.imie, Uczniowie.nazwisko, Klasy.nazwa AS klasa, Przedmioty.nazwa AS przedmiot
+			SELECT Uczniowie.id, Uczniowie.imie, Uczniowie.nazwisko, Klasy.nazwa AS klasa, Przedmioty.nazwa AS przedmiot
 			FROM Uczniowie
 			INNER JOIN Klasy ON Uczniowie.klasaId = Klasy.id
 			INNER JOIN Przedmioty ON Przedmioty.klasaId = Klasy.id
@@ -440,7 +440,7 @@ class DatabaseManager(MysqlConnection):
 		for g in grade:
 			query = """
 				INSERT INTO Oceny
-				VALUES (NULL,{},{},{},"{}","{}",0)
+				VALUES (NULL,{},{},{},"{}","{}")
 			""".format(g[0],courseId,g[1],date,description.encode("cp1250"))
 			try:
 				self.execute(query)
@@ -459,10 +459,10 @@ class DatabaseManager(MysqlConnection):
 		except MysqlError as e:
 			print("Nie udało się wykonać operacji na bazie!")				
 
-	def add_pupil_absence(self, pupilId, courseId, date, day, lesson):
-		lessonId = self.__get_lesson_id(courseId,day,lesson)
-		if lessonId is None:
-			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
+	def add_pupil_absence(self, pupilId, courseId, date, lessonId):
+#		lessonId = self.__get_lesson_id(courseId,day,lesson)
+#		if lessonId is None:
+#			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
 		for p in pupilId:
 			query = """
 				INSERT INTO Nieobecnosci
@@ -473,10 +473,10 @@ class DatabaseManager(MysqlConnection):
 			except MysqlError as e:
 				print("Nie udało się wykonać operacji na bazie!")
 	
-	def edit_pupil_absence(self, courseId, absenceId, date, day, lesson, excuse):
-		lessonId = self.__get_lesson_id(courseId,day,lesson)
-		if lessonId == None:
-			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")		 
+	def edit_pupil_absence(self, courseId, absenceId, date, lessonId, excuse):
+#		lessonId = self.__get_lesson_id(courseId,day,lesson)
+#		if lessonId == None:
+#			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")		 
 		query = """
 			UPDATE Nieobecnosci
 			SET data = "{}",
@@ -491,7 +491,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_pupil_absence(self, pupilId, courseId):
 		query = """
-			SELECT Nieobecnosci.data, Nieobecnosci.id, Lekcje.numerLekcji, Nieobecnosci.usprawiedliwienie
+			SELECT Nieobecnosci.data, Nieobecnosci.id, Nieobecnosci.lekcjaId, Lekcje.dzien, Lekcje.numerLekcji, Nieobecnosci.usprawiedliwienie
 			FROM Nieobecnosci
 			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
 			WHERE Nieobecnosci.uczenId = {} AND Lekcje.przedmiotId = {}
