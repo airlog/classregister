@@ -28,7 +28,7 @@
 	    </tr>
 	    <tr>
 	        <td colspan="4"></td>
-	        <td class="textcenter"><input id="opisoceny" form="focena" type="text" name="opisoceny" title="krótki opis oceny" minlength="3" maxlength="16" required="true" class="textright"/></td>
+	        <td class="textcenter"><input id="opisoceny" form="focena" type="text" name="opisoceny" title="krótki opis oceny" minlength="3" required="true" class="textright"/></td>
 	    </tr>
 	    
 	    {% set i = 1 %}
@@ -72,7 +72,7 @@
 	        <td colspan="2">
 	        	<select form="fnieobecnosc" name="lekcja" style="width:100%;">
 					{% for l in lessons %}
-						<option value="{{ l["lekcjaId"]}}">dzień:  {{ l["dzien"] }} &nbsp; &nbsp; &nbsp; lekcja: {{ l["numerLekcji"] }}</option>								
+						<option value="{{ l["lekcjaId"]}}">dzień:  {{ l["dzien"] }}, lekcja: {{ l["numerLekcji"] }}</option>								
 					{% end %}	
 				</select>
 			</td>

@@ -20,7 +20,7 @@ function presanceFormSubmit() {
     var form = document.getElementById("fnieobecnosc");
     var hiddenDate = document.getElementById("dateInput");
     var input = document.getElementById("absentInput");
-    var pattern = /\w+(\d+)/;
+    var pattern = /[^\d]+(\d+)/;
     
     /* wyczyść poprzedni stan */
     input.value = "";
@@ -53,7 +53,7 @@ function degreeFormSubmit() {
     var hiddenDate = document.getElementById("dateInputDegree");
     var opis = document.getElementById("opisoceny");
     var input = document.getElementById("degreeInput");
-    var pattern = /\w+(\d+)/;
+    var pattern = /[^\d]+(\d+)/;
     
     /* wyczyść poprzedni stan */
     input.value = "";
