@@ -233,16 +233,21 @@ class DatabaseManager(MysqlConnection):
 		
 	# dla nauczyciela:
 	
-	def get_teacher_schedule(self, teacherId):
-		schedule = """
-			SELECT Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Klasy.nazwa, Przedmioty.nazwa AS przedmiot, Lekcje.sala
+	def get_teacher_schedule(self, teacherId, courseId = None):
+		query = """
+			SELECT Lekcje.id AS lekcjaId, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Klasy.nazwa, Przedmioty.nazwa AS przedmiot, Lekcje.sala
 			FROM Przedmioty
 			INNER JOIN Lekcje ON Przedmioty.id = Lekcje.przedmiotId
 			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
-			WHERE nauczycielId = {}
-			ORDER BY Lekcje.dzien, Lekcje.numerLekcji
-			""".format(teacherId)
-		result = self.query(schedule)
+			WHERE Przedmioty.nauczycielId = {}
+		""".format(teacherId)
+			
+		if courseId is not None:
+			query += """AND Przedmioty.id = {}\n""".format(courseId)
+
+		query += """ORDER BY Lekcje.dzien, Lekcje.numerLekcji"""
+
+		result = self.query(query)
 		if result is not None:
 			return result
 		return []
@@ -259,6 +264,19 @@ class DatabaseManager(MysqlConnection):
 		result = self.query(query)
 		if result is not None:
 			return result
+		return []
+	
+	def get_course_data(self, courseId):
+		query = """
+			SELECT Klasy.nazwa AS klasa, Przedmioty.nazwa AS przedmiot
+			FROM Przedmioty
+			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
+			WHERE Przedmioty.id = {}
+		""".format(courseId)
+		
+		result = self.query(query)
+		if result is not None:
+			return result[0]
 		return []
 		
 	def get_pupil_data(self, pupilId, courseId):
@@ -306,7 +324,7 @@ class DatabaseManager(MysqlConnection):
 		
 	def get_teacher_events(self, teacherId, courseId = None):
 		query = """
-			SELECT Wydarzenia.id AS chuj, Wydarzenia.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa AS przedmiot, Przedmioty.id, Klasy.nazwa, Wydarzenia.tresc
+			SELECT Wydarzenia.id AS chuj, Wydarzenia.data, Lekcje.id AS lekcjaId, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.nazwa AS przedmiot, Przedmioty.id, Klasy.nazwa, Wydarzenia.tresc
 			FROM Wydarzenia
 			INNER JOIN Lekcje ON Wydarzenia.lekcjaId = Lekcje.id
 			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
@@ -323,53 +341,20 @@ class DatabaseManager(MysqlConnection):
 			return result
 		return []
 		
-	def add_teacher_event(self, teacherId, date, lesson, course, group, text):
+	def add_teacher_event(self, teacherId, date, lessonId, text):
 
-		query1 = """
-			SELECT Lekcje.id FROM Lekcje
-			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
-			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
-			WHERE Lekcje.numerLekcji = {}
-			AND Przedmioty.nauczycielId = {}
-			AND Przedmioty.nazwa = "{}"
-			AND Klasy.nazwa = "{}" 
-		""".format(lesson, teacherId, course.encode("cp1250"), group)
-
-		result = self.query(query1)
-		
-		if result is None or len(result) == 0:
-			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
-				 	
-		lessonId = result[0]["id"]
-
-		query2 = """
+		query = """
 			INSERT INTO Wydarzenia VALUES (NULL,"{}",{},"{}")
 			""".format(date,lessonId,text.encode("cp1250"))
 
 		try:
-			self.execute(query2)
+			self.execute(query)
 		except MysqlError as e:
-			print("złapałem chuja!")				
+			print("Nie udało się wykonać operacji na bazie!")				
 
-	def edit_teacher_event(self, teacherId, eventId, date, lesson, course, group, text):
-		query1 = """
-			SELECT Lekcje.id FROM Lekcje
-			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
-			INNER JOIN Klasy ON Przedmioty.klasaId = Klasy.id
-			WHERE Lekcje.numerLekcji = {}
-			AND Przedmioty.nauczycielId = {}
-			AND Przedmioty.nazwa = "{}"
-			AND Klasy.nazwa = "{}" 
-		""".format(lesson, teacherId, course.encode("cp1250"), group)
+	def edit_teacher_event(self, teacherId, eventId, date, lessonId, text):
 
-		result = self.query(query1)
-		
-		if result is None or len(result) == 0:
-			raise TypeError("Nie istnieje lekcja której dotyczy wydarzenie")
-				 	
-		lessonId = result[0]["id"]
-
-		query2 = """
+		query = """
 			UPDATE Wydarzenia
 			SET data = "{}",
 			lekcjaId = {},
@@ -378,9 +363,9 @@ class DatabaseManager(MysqlConnection):
 			""".format(date,lessonId,text.encode("cp1250"),eventId)
 
 		try:
-			self.execute(query2)
+			self.execute(query)
 		except MysqlError as e:
-			print("złapałem chuja!")				
+			print("Nie udało się wykonać operacji na bazie!")				
 		
 	
 	def delete_teacher_event(self, eventId):

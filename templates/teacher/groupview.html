@@ -14,7 +14,7 @@
         <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
         <input id="degreeInput" type="hidden" name="degreeData" required="true" value=""/>
     </form>
-    <h2>Wydarzenia</h2>
+    <h2>Klasa {{groupData["klasa"] }} - {{groupData["przedmiot"] }}</h2>
 	<table>
 	    <tr>
 	        <th>numer</th>
@@ -51,9 +51,29 @@
 	        </tr>
 	        {% set i = i + 1 %}
 	    {% end %}
-	    
 	    <tr>
-	        <td colspan="3"></td>
+			<td class="textcenter">
+			  <b>data</b>
+	        </td>
+	        <td class="textcenter">
+				<b>dzień</b>
+	        <td class="textcenter">
+				<b>lekcja</b>
+			</td>
+			</td>
+	        <td colspan="2"></td>
+	    </tr>
+	    <tr>
+			<td>
+			  <input form="fnieobecnosc" name="data" class="textright" size="10" type="date" title="poprawna data"/>
+	        </td>
+	        <td colspan="2">
+	        	<select name="lekcja"  style="width:100%;">
+					{% for l in lessons %}
+						<option value="{{ l["lekcjaId"]}}">{{ l["dzien"] }} {{ l["numerLekcji"] }} {{ l["przedmiot"] }} {{l["nazwa"] }}</option>								
+					{% end %}	
+				</select>
+			</td>
 	        <td class="textcenter"><input form="fnieobecnosc" type="button" value="Wstaw nieobecność" onclick="presanceFormSubmit()"/></td>
 	        <td class="textcenter"><input form="focena" type="button" value="Wstaw oceny" onclick="degreeFormSubmit()"/></td>
 	    </tr>

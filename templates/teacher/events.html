@@ -47,12 +47,25 @@
 	            <form action="edit/{{ e["chuj"] }}" method="POST">
 		            {% module xsrf_form_html() %}
 		            <input type="hidden" name="eventid" value="{{ e["chuj"] }}"/>
-			        <td colspan="2">
+			        <td>
 			            <input name="data" class="textright" size="10" type="date"  value="{{ e["data"] }}" title="poprawna data"/>
 			        </td>	
-			        <td><input name="lekcja" class="textright" style="width:100%;" size="1" type="number" min="0" max="10" value="{{ e["numerLekcji"] }}" title="godzina lekcyjna"/></td>	
+		
+			        <td colspan="4">
+						<select name="lekcja"  style="width:100%;">
+							{% for l in lessons %}
+								{% if l["lekcjaId"]==e["lekcjaId"]%}
+									<option value="{{ l["lekcjaId"]}}" selected>{{ l["dzien"] }} {{ l["numerLekcji"] }} {{ l["przedmiot"] }} {{l["nazwa"] }}</option>
+								{% else %}
+									<option value="{{ l["lekcjaId"]}}">{{ l["dzien"] }} {{ l["numerLekcji"] }} {{ l["przedmiot"] }} {{l["nazwa"] }}</option>								
+								{% end %}
+							{% end %}
+						</select>
+					</td>
+			       <!-- <td><input name="lekcja" class="textright" style="width:100%;" size="1" type="number" min="0" max="10" value="{{ e["numerLekcji"] }}" title="godzina lekcyjna"/></td>	
 			        <td><input name="przedmiot" class="textright" size="20" type="text" list="przedmioty" value="{{ e["przedmiot"] }}" title="nazwa przedmiotu"/></td>   	
 			        <td><input name="klasa" class="textright" size="5" type="text" pattern="(\d{4})(\w+)" value="{{ e["nazwa"] }}" title="np. 2014A"/></td>	
+			        -->
 			        <td><input name="tresc" class="textright" style="width:100%;" type="text" value="{{ e["tresc"] }}" title="lakonicznie opisz wydarzenie"/></td>	
 			        <td><input type="submit" value="Ok"/></td>
 			        <td><input type="button" value="Anuluj" onclick="changeVisibility('editfield{{ e["chuj"] }}')"/></td>	
@@ -63,16 +76,25 @@
 	    <tr id="new_data" class="hidable">		    
 		    <form action="new" method="POST">
 		        {% module xsrf_form_html() %}
-			    <td colspan="2">
+			    <td>
 			        <input name="data" class="textright" size="10" type="date" title="poprawna data"/>
 			    </td>	
+			        <td colspan="4">
+						<select name="lekcja"  style="width:100%;">
+							{% for l in lessons %}
+							<option value="{{ l["lekcjaId"]}}">{{ l["dzien"] }} {{ l["numerLekcji"] }} {{ l["przedmiot"] }} {{l["nazwa"] }}</option>
+							{% end %}
+						</select>
+					</td>
+					<!--
 			    <td><input name="lekcja" class="textright" style="width:100%;" size="1" type="number" min="0" max="10" title="godzina lekcyjna"/></td>	
 			    <td><input name="przedmiot" class="textright" size="20" type="text" list="przedmioty" title="nazwa przedmiotu"/></td>   	
 			    <td><input name="klasa" class="textright" size="5" type="text" pattern="(\d{4})(\w+)" title="np. 2014A"/></td>	
+			    	-->
 			    <td><input name="tresc" class="textright" style="width:100%;" type="text" title="lakonicznie opisz wydarzenie"/></td>	
 			    <td colspan="2" style="text-align: center;">
 			        <input type="submit" value="Dodaj"/>
-			    </td>	
+			    </td>
 		    </form>
 	    </tr>
 	    <tr><td colspan="8" style="text-align:center;"><button onclick="changeVisibility('new_data')">Dodaj nowy</button></td></tr>

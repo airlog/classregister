@@ -56,22 +56,24 @@ class EventHandler(MainHandler):
             if value is None or value == "": raise HTTPError(405, "Illegal value of '{}': '{}'".format(key, value))
 
     def __new_event(self):
-        attrs = self.__fill_attributes({"_xsrf": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+#        attrs = self.__fill_attributes({"_xsrf": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        attrs = self.__fill_attributes({"_xsrf": None, "data": None, "lekcja": None, "tresc": None,})
         self.__assert_attributes(attrs)
     
         self.db.add_teacher_event(
                 self.session["userId"],
                 attrs["data"],
                 attrs["lekcja"],
-                attrs["przedmiot"],
-                attrs["klasa"],
+#                attrs["przedmiot"],
+ #               attrs["klasa"],
                 attrs["tresc"]
             )
         self.flash_message("Dodano wydarzenie", "Pomyślnie dodano wydarzenie!")
         self.redirect("/teacher/{}/events/".format(self.session["user"]))
     
     def __edit_event(self, eventId):
-        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+#        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None, "data": None, "lekcja": None, "przedmiot": None, "klasa": None, "tresc": None,})
+        attrs = self.__fill_attributes({"_xsrf": None, "eventid": None, "data": None, "lekcja": None, "tresc": None,})
         self.__assert_attributes(attrs)
         if eventId == int(attrs["eventid"]): raise HTTPError(403, "Different eventId security check failed!")
         
@@ -80,8 +82,8 @@ class EventHandler(MainHandler):
                 attrs["eventid"],
                 attrs["data"],
                 attrs["lekcja"],
-                attrs["przedmiot"],
-                attrs["klasa"],
+#                attrs["przedmiot"],
+#                attrs["klasa"],
                 attrs["tresc"]
             )
         self.flash_message("Edytowano wydarzenie", "Pomyślnie edytowano wydarzenie nr.{}!".format(eventId))
@@ -102,8 +104,9 @@ class EventHandler(MainHandler):
         self._validate_pesel(pesel)
         if task is not None and task != "": raise HTTPError(403)
         
-        events = self.db.get_teacher_events(self.session["userId"])        
-        self.render("teacher/events.html", events = events)
+        events = self.db.get_teacher_events(self.session["userId"])
+        lessons = self.db.get_teacher_schedule(self.session["userId"])      
+        self.render("teacher/events.html", events = events, lessons = lessons)
 
     @authenticated
     @require_teacher()
@@ -125,7 +128,9 @@ class GroupHandler(MainHandler):
     def __get_groupview(self, pesel, courseId):
         cid = int(courseId) # regex broni, regex chroni!
         pupils = self.db.get_pupils_in_class(cid)
-        self.render("teacher/groupview.html", pupils = pupils)
+        groupData = self.db.get_course_data(cid)
+        lessons = self.db.get_teacher_schedule(self.session["userId"],courseId)
+        self.render("teacher/groupview.html", pupils = pupils, lessons = lessons, groupData = groupData)
         
     def __get_pupil(self, pesel, courseId, pupilId):
         cid, pid = int(courseId), int(pupilId)
