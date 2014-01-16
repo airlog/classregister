@@ -244,7 +244,7 @@ class DatabaseManager(MysqlConnection):
 	
 	def get_user_absence(self, userId):
 		query = """
-			SELECT Nieobecnosci.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Przedmioty.nazwa
+			SELECT Nieobecnosci.data, Lekcje.dzien, Lekcje.numerLekcji, Przedmioty.id, Przedmioty.nazwa, Nieobecnosci.usprawiedliwienie
 			FROM Nieobecnosci 
 			INNER JOIN Lekcje ON Nieobecnosci.lekcjaId = Lekcje.id
 			INNER JOIN Przedmioty ON Lekcje.przedmiotId = Przedmioty.id
@@ -257,6 +257,8 @@ class DatabaseManager(MysqlConnection):
 		return []		
 		
 	# dla nauczyciela:
+	
+	#plan
 	
 	def get_teacher_schedule(self, teacherId, courseId = None):
 		query = """
@@ -276,6 +278,7 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
+	# klasy:
 	
 	def get_teacher_groups(self,teacherId):
 		query = """
@@ -290,7 +293,7 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
-	
+	# dodatkowe potrzebne do tytulow w gui
 	def get_course_data(self, courseId):
 		query = """
 			SELECT Klasy.nazwa AS klasa, Przedmioty.nazwa AS przedmiot
@@ -317,22 +320,8 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result[0]
 		return []
-	
-	def __get_lesson_id(self,courseId,day,lesson):
-		query = """
-			SELECT Lekcje.id FROM Lekcje
-			WHERE Lekcje.dzien = {}
-			AND Lekcje.numerLekcji = {}
-			AND Lekcje.przedmiotId = {}
-		""".format(day,lesson, courseId)
 		
-		result = self.query(query)
-		if result is not None and len(result)>0:
-			return result[0]["id"]
-		return None
-	
-	
-		
+	#uczniowie w klasie		
 	def get_pupils_in_class(self, courseId):
 		query = """
 			SELECT Uczniowie.imie, Uczniowie.nazwisko, Uczniowie.id
@@ -346,6 +335,8 @@ class DatabaseManager(MysqlConnection):
 		if result is not None:
 			return result
 		return []
+	
+	#zwiazane z wydarzeniami
 		
 	def get_teacher_events(self, teacherId, courseId = None):
 		query = """

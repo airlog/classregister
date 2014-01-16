@@ -9,9 +9,9 @@
 	    <h3>Oceny</h3>
 	    <table>
 		    <tr>
-			    <th>data</th>
-			    <th>ocena</th>
-			    <th>opis</th>
+			    <th class="textcenter">data</th>
+			    <th class="textcenter">ocena</th>
+			    <th class="textcenter">opis</th>
 			    <th></th>
 		        <th></th>
 		    </tr>
@@ -21,8 +21,8 @@
 		                {% module xsrf_form_html() %}
 			            <input type="hidden" name="gradeid" value="{{ g["id"] }}"/>
 			            <td>{{ g["data"]}}</td>
-					    <td>{{ g["ocena"]}}</td>
-					    <td>{{ g["opis"]}}</td>
+					    <td class="textcenter">{{ g["ocena"]}}</td>
+					    <td class="textcenter">{{ g["opis"]}}</td>
 					    <td><input style="width:100%;" type="submit" value="X"/></td>
 				    </form>
 				    <td><button onclick="changeVisibility('editfield_g{{ g["id"] }}')">edit</button></td>
@@ -94,13 +94,13 @@
 			        <form action="../presances/del" method="POST">
 		                {% module xsrf_form_html() %}
 			            <input type="hidden" name="absenceid" value="{{ a["id"] }}"/>
-					    <td>{{ a["data"]}}</td>
-					    <td>{{ a["dzien"]}}</td>
-					    <td>{{ a["numerLekcji"]}}</td>
+					    <td class="textcenter">{{ a["data"]}}</td>
+					    <td class="textcenter">{{ a["dzien"]}}</td>
+					    <td class="textcenter">{{ a["numerLekcji"]}}</td>
 					    {% if a["usprawiedliwienie"] == 0%}
-						    <td>NIE</td>
+						    <td class="textcenter">NIE</td>
 					    {% else %}
-						    <td>TAK</td>
+						    <td class="textcenter">TAK</td>
 					    {% end %}
 				    <td><input style="width:100%;" type="submit" value="X"/></td>
 				    </form>
@@ -125,7 +125,7 @@
 							    {% end %}
 						    </select>
 	                    </td>
-			            <td>
+			            <td class="textcenter">
 						    <select name="usprawiedliwienie">
 							    {% if a["usprawiedliwienie"] == 0%}
 								    <option value="0" selected>NIE</option>
@@ -156,7 +156,7 @@
 							    {% end %}
 						    </select>
 	                    </td>
-	                    <td>NIE</td>	
+	                    <td class="textcenter">NIE</td>	
 			        <td colspan="2" style="text-align: center;">
 			            <input type="submit" value="Dodaj"/>
 			        </td>

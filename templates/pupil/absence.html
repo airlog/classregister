@@ -7,17 +7,23 @@
     <h2>Nieobecności</h2>
 	<table>
 		<tr>
-			<th>data</th>
-			<th>dzień</th>
-			<th>lekcja</th>
-			<th>przedmiot</th>
+			<th class="textcenter">data</th>
+			<th class="textcenter">dzień</th>
+			<th class="textcenter">lekcja</th>
+			<th class="textcenter">przedmiot</th>
+			<th class="textcenter">usprawiedliwienie</th>
 		</tr>
 		{% for a in absence %}
 			<tr>
-				<td>{{ a["data"] }}</td>
-				<td>{{ a["dzien"] }}</td>
-				<td class="right">{{ a["numerLekcji"] }}</td>
-				<td> <a href="/pupil/{{ current_user["user"] }}/grades/{{ a["id"]}}">{{ a["nazwa"] }}</a></td>
+				<td class="textcenter">{{ a["data"] }}</td>
+				<td class="textcenter">{{ a["dzien"] }}</td>
+				<td class="textcenter">{{ a["numerLekcji"] }}</td>
+				<td class="textcenter"> <a href="/pupil/{{ current_user["user"] }}/grades/{{ a["id"]}}">{{ a["nazwa"] }}</a></td>
+				{% if a["usprawiedliwienie"] == 0%}
+					<td class="textcenter">NIE</td>
+				{% else %}
+					<td class="textcenter">TAK</td>
+				{% end %}
 			</tr>
 		{% end %}
     </table>

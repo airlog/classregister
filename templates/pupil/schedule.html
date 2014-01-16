@@ -7,19 +7,19 @@
     <h2>Plan lekcji</h2>
 	<table>
 		<tr>
-			<th>dzień</th>
-			<th>lekcja</th>
-			<th>przedmiot</th>
-			<th>nauczyciel</th>
-			<th>sala</th>
+			<th class="textcenter">dzień</th>
+			<th class="textcenter">lekcja</th>
+			<th class="textcenter">przedmiot</th>
+			<th class="textcenter">nauczyciel</th>
+			<th class="textcenter">sala</th>
 		</tr>
 		{% for s in schedule %}
 			<tr>
-				<td>{{ s["dzien"] }}</td>
-				<td class="right">{{ s["numerLekcji"] }}</td>
-				<td> <a href="/pupil/{{ current_user["user"] }}/grades/{{ s["id"] }}">{{ s["nazwa"] }}</a></td>
-				<td>{{ s["imie"] }} {{ s["nazwisko"] }}</td>
-				<td>{{ s["sala"] }}</td>
+				<td class="textcenter">{{ s["dzien"] }}</td>
+				<td class="textcenter">{{ s["numerLekcji"] }}</td>
+				<td class="textcenter"> <a href="/pupil/{{ current_user["user"] }}/grades/{{ s["id"] }}">{{ s["nazwa"] }}</a></td>
+				<td class="textcenter">{{ s["imie"] }} {{ s["nazwisko"] }}</td>
+				<td class="textcenter">{{ s["sala"] }}</td>
 			</tr>
 		{% end %}
     </table>

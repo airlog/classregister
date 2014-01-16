@@ -7,21 +7,21 @@
     <h2>Wydarzenia</h2>
 	<table>
 		<tr>
-			<th>data</th>
-			<th>dzień</th>
-			<th>lekcja</th>
-			<th>przedmiot</th>
-			<th>nauczyciel</th>
-			<th>tresc</th>
+			<th class="textcenter">data</th>
+			<th class="textcenter">dzień</th>
+			<th class="textcenter">lekcja</th>
+			<th class="textcenter">przedmiot</th>
+			<th class="textcenter">nauczyciel</th>
+			<th class="textcenter">tresc</th>
 		</tr>
 		{% for e in events %}
 			<tr>
-				<td>{{ e["data"] }}</td>
-				<td>{{ e["dzien"] }}</td>
-				<td class="right">{{ e["numerLekcji"] }}</td>
-				<td><a href="/pupil/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["nazwa"] }}</a></td>
-				<td>{{ e["imie"] }} {{ e["nazwisko"] }}</td>
-				<td>{{ e["tresc"] }}</td>
+				<td class="textcenter">{{ e["data"] }}</td>
+				<td class="textcenter">{{ e["dzien"] }}</td>
+				<td class="textcenter">{{ e["numerLekcji"] }}</td>
+				<td class="textcenter"><a href="/pupil/{{ current_user["user"] }}/grades/{{ e["id"]}}">{{ e["nazwa"] }}</a></td>
+				<td class="textcenter">{{ e["imie"] }} {{ e["nazwisko"] }}</td>
+				<td class="textcenter">{{ e["tresc"] }}</td>
 			</tr>
 		{% end %}
     </table>
