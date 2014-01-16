@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="marginize">
-    <form action="/test/post" method="POST" id="fnieobecnosc">
+    <form action="presances/set" method="POST" id="fnieobecnosc">
         {% module xsrf_form_html() %}
         <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
         <input id="absentInput" type="hidden" name="absentStudents" value=""/>
