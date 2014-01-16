@@ -149,18 +149,23 @@ class GroupHandler(MainHandler):
 class GroupPostHandler(MainHandler):
     
     def __handle_presances_task(self, courseId, action):
-        attrs = self._fill_attributes({"_xsrf": None, "nauczycielid": None, "absentStudents": None, })
+        attrs = self._fill_attributes({"_xsrf": None, "nauczycielid": None, "absentDate": None, "lekcja": None, "absentStudents": None,})
         self._assert_attributes(attrs)
         if int(attrs["nauczycielid"]) != self.session["userId"]: raise HTTPError(403)
         
         # wiemy z założenia, że będzie jeden wiersz
         pupilIds = sorted([int(s) for s in csv_parse(attrs["absentStudents"])[0] if len(s) > 0])
-        cid = int(courseId)
-        date = day = lessonNum = None   # TODO: wypełnij!
-        self.db.add_pupil_absence(pupilIds, cid, date, day, lessonNum)
+        cid, date, lessonId = int(courseId), attrs["absentDate"], attrs["lekcja"]
+        self.db.add_pupil_absence(pupilIds, cid, date, lessonId)
         
     def __handle_degrees_task(self, courseId, action):
-        pass
+        attrs = self._fill_attributes({"_xsrf": None, "nauczycielid": None, "degreeDate": None, "degreeData": None, "opisoceny": None})
+        self._assert_attributes(attrs)
+        if int(attrs["nauczycielid"]) != self.session["userId"]: raise HTTPError(403)
+        
+        cid, desc, date = int(courseId), attrs["opisoceny"], attrs["degreeDate"]
+        grades = map(lambda x: (int(x[0]), int(x[1])), csv_parse(attrs["degreeData"]))
+        self.db.add_pupil_grade(desc, grades, cid, date)
         
     @authenticated
     @require_teacher()

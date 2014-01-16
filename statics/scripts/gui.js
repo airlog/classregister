@@ -18,12 +18,20 @@ function hide(className) {
 
 function presanceFormSubmit() {    
     var form = document.getElementById("fnieobecnosc");
+    var hiddenDate = document.getElementById("dateInput");
     var input = document.getElementById("absentInput");
     var pattern = /\w+(\d+)/;
     
     /* wyczyść poprzedni stan */
     input.value = "";
+    hiddenDate.value = "";
     
+    var dateInput = document.getElementById("dateinput");   
+    hiddenDate.value = dateInput.value;
+    
+    console.debug(dateInput);
+    console.debug(form);
+        
     /* CSV, jeden wiersz, w każdej kolumnie ID nieobecnego ucznia */
     var checkboxes = document.getElementsByClassName("presancestate");
     
@@ -37,17 +45,22 @@ function presanceFormSubmit() {
         absent++;
     }
      
-    if (absent > 0) form.submit();
+    if (absent > 0 && dateInput.value) form.submit();
 }
 
 function degreeFormSubmit() {    
     var form = document.getElementById("focena");
+    var hiddenDate = document.getElementById("dateInputDegree");
     var opis = document.getElementById("opisoceny");
     var input = document.getElementById("degreeInput");
     var pattern = /\w+(\d+)/;
     
     /* wyczyść poprzedni stan */
     input.value = "";
+    hiddenDate.value = "";
+    
+    var dateInput = document.getElementById("dateinput");   
+    hiddenDate.value = dateInput.value;
     
     /* CSV, wiele wierszy, dwie kolumny: uczenId,ocena */
     var selects = document.getElementsByClassName("degreestate");
@@ -62,6 +75,6 @@ function degreeFormSubmit() {
         degrees++;
     }
     
-    if (degrees > 0 && opis.value.length > 3) form.submit();
+    if (degrees > 0 && opis.value.length > 3 && dateInput.value) form.submit();
 }
 

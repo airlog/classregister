@@ -8,11 +8,13 @@
         {% module xsrf_form_html() %}
         <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
         <input id="absentInput" type="hidden" name="absentStudents" value=""/>
+        <input id="dateInput" type="hidden" name="absentDate" value=""/>
     </form>
-    <form action="/test/post" method="POST" id="focena">
+    <form action="degrees/set" method="POST" id="focena">
         {% module xsrf_form_html() %}
         <input type="hidden" name="nauczycielid" value="{{ session["userId"] }}"/>
         <input id="degreeInput" type="hidden" name="degreeData" required="true" value=""/>
+        <input id="dateInputDegree" type="hidden" name="degreeDate" value=""/>
     </form>
     <h2>Klasa {{groupData["klasa"] }} - {{groupData["przedmiot"] }}</h2>
 	<table>
@@ -65,10 +67,10 @@
 	    </tr>
 	    <tr>
 			<td>
-			  <input form="fnieobecnosc" name="data" class="textright" size="10" type="date" title="poprawna data"/>
+			  <input id="dateinput" class="textright" size="10" type="date" title="poprawna data"/>
 	        </td>
 	        <td colspan="2">
-	        	<select name="lekcja"  style="width:100%;">
+	        	<select form="fnieobecnosc" name="lekcja" style="width:100%;">
 					{% for l in lessons %}
 						<option value="{{ l["lekcjaId"]}}">dzień:  {{ l["dzien"] }} &nbsp; &nbsp; &nbsp; lekcja: {{ l["numerLekcji"] }}</option>								
 					{% end %}	
