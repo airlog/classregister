@@ -440,7 +440,7 @@ class DatabaseManager(MysqlConnection):
 		for g in grade:
 			query = """
 				INSERT INTO Oceny
-				VALUES (NULL,{},{},{},"{}","{}",0)
+				VALUES (NULL,{},{},{},"{}","{}")
 			""".format(g[0],courseId,g[1],date,description.encode("cp1250"))
 			try:
 				self.execute(query)
